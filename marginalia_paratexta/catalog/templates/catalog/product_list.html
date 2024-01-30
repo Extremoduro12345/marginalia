@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Creation List</h1>
+  {% if product_list %}
+    <ul>
+      {% for product in product_list %}
+      <li>
+        <a href="{% url 'creation-detail' pk=product.id %}">{{ product.title }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>There are no products in the library.</p>
+  {% endif %}
+{% endblock %}
