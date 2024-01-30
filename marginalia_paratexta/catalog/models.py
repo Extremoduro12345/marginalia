@@ -253,6 +253,7 @@ class Staging(models.Model):
 
 class Editorial(models.Model):
     name = models.CharField('Nombre', max_length=10000)
+    city = models.TextField('Ciudad',null=True, blank=True)
     def __str__(self):
         return self.name
     class Meta:
