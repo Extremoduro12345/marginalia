@@ -4,12 +4,6 @@
 <h1>{{ product.title }}</h1>
 
 <div>
-  <h2>Información general</h2>
-  <p>ID: {{ product.id }}</p>
-  <p>Última modificación: {{ product.last_modified }}</p>
-</div>
-
-<div>
   <h2>Detalles de la creación</h2>
   <p>Título original: {{ product.creation.original_title }}</p>
   <p>Subtítulos, capítulos y entregas: {{ product.creation.subtitles }}</p>
@@ -73,7 +67,7 @@
 <!-- PARATEXTO TERMINADO-->
   {% if product.product_paratext %}
     <div>
-      <h2>Paratexto</h2>
+      <h2>Paratextos</h2>
       {% if product.product_paratext.introduction %}
         <strong>Introducción</strong>
         <p>{{ product.product_paratext.introduction }}</p>
@@ -95,22 +89,22 @@
         <div>
           <strong>Cartel portada, contraportada y carátula</strong>
         </div>
-        <ul>
-          {% for cover in product.product_paratext.paratext_cover.all %}
+        {% for cover in product.product_paratext.paratext_cover.all %}
+          <ul>
             {% if cover.image %}
               <img src="{{ cover.image }}" alt="{{ cover.description}} " style="max-width: 300px;">
             {% endif %}
             <p>{{ cover.description|default:"" }}</p>
-          {% endfor %}
-        </ul>
+          </ul>
+        {% endfor %}
       {% endif %}
     
       {% if product.product_paratext.paratext_adstrailer.all %}
         <div>
           <strong>Anuncios y tráileres</strong>
         </div>
-        <ul>
-          {% for adstrailer in product.product_paratext.paratext_adstrailer.all %}
+        {% for adstrailer in product.product_paratext.paratext_adstrailer.all %}
+          <ul>
             {% if adstrailer.image %}
               <img src="{{ adstrailer.image }}" alt="{{ adstrailer.description}} " style="max-width: 300px;">
             {% endif %}
@@ -118,16 +112,16 @@
             {% if adstrailer.videoclip %}
               <a href="{{ adstrailer.videoclip }}" target="_blank">Enlace al tráiler</a>
             {% endif %}
-          {% endfor %}
-        </ul>
+          </ul>
+        {% endfor %}
       {% endif %}
 
       {% if product.product_paratext.paratext_extras.all %}
         <div>
           <strong>Extras</strong>
         </div>
-        <ul>
-          {% for extra in product.product_paratext.paratext_extras.all %}
+        {% for extra in product.product_paratext.paratext_extras.all %}
+          <ul>
             {% if extra.image %}
               <img src="{{ extra.image }}" alt="{{ extra.description}} " style="max-width: 300px;">
             {% endif %}
@@ -135,68 +129,136 @@
             {% if extra.videoclip %}
               <a href="{{ extra.videoclip }}" target="_blank">Enlace al extra</a>
             {% endif %}
-          {% endfor %}
-        </ul>
+          </ul>
+        {% endfor %}
       {% endif %}
 
       {% if product.product_paratext.paratext_rulebook.all %}
         <div>
           <strong>Libros de reglas</strong>
         </div>
-        <ul>
-          {% for rulebook in product.product_paratext.paratext_rulebook.all %}
+        {% for rulebook in product.product_paratext.paratext_rulebook.all %}
+          <ul>
             {% if rulebook.image %}
               <img src="{{ rulebook.image }}" alt="{{ rulebook.description}} " style="max-width: 300px;">
             {% endif %}
             <p>{{ rulebook.description|default:"" }}</p>
-          {% endfor %}
-        </ul>
-      {% endif %}
-
-      {% if product.product_paratext.paratext_videoclip.all %}
-      <div>
-        <strong>Videoclips y actuaciones en directo</strong>
-      </div>
-      <ul>
-        {% for videoclip in product.product_paratext.paratext_videoclip.all %}
-          {% if videoclip.image %}
-            <img src="{{ videoclip.image }}" alt="{{ videoclip.description}} " style="max-width: 300px;">
-          {% endif %}
-          <p>{{ videoclip.description|default:"" }}</p>
-          {% if videoclip.videoclip %}
-            <a href="{{ videoclip.videoclip }}" target="_blank">Enlace al videoclip</a>
-          {% endif %}
+          </ul>
         {% endfor %}
-      </ul>
+      {% endif %}
+      {% if product.product_paratext.paratext_videoclip.all %}
+        <div>
+          <strong>Videoclips y actuaciones directo</strong>
+        </div> 
+        {% for videoclip in product.product_paratext.paratext_videoclip.all %}
+          <ul>
+            {% if videoclip.image %}
+              <img src="{{ videoclip.image }}" alt="{{ videoclip.description}} " style="max-width: 300px;">
+            {% endif %}
+            <p>{{ videoclip.description|default:"" }}</p>
+            {% if videoclip.videoclip %}
+              <a href="{{ videoclip.videoclip }}" target="_blank">Enlace al videoclip</a>
+            {% endif %}
+          </ul>
+        {% endfor %}
     {% endif %}
     </div>
   {% endif %}
 
-  <!-- PARATEXTO TERMINADO-->
-  <div>
-    <h2>Metatextos</h2>
+  <!-- METATEXTOS TERMNINADO -->
+  {% if product.product_metatext %}
+    <div>
+      <h2>Metatextos</h2>
 
-    {% for declaration in product.product_metatext.metatext_declarations.all %}
-    <p>Declaración autorizada: {{ declaration.description|default:"" }}</p>
-    {% endfor %}
+      {% if product.product_metatext.metatext_declarations.all %}
+        <div>
+          <strong>Declaraciones autorizadas</strong>
+        </div>
+        {% for declaration in product.product_metatext.metatext_declarations.all %}
+          <ul>
+            <p>{{ declaration.description|default:"" }}</p>
+            {% if declaration.link %}
+              <a href="{{ declaration.link }}" target="_blank">Enlace a la declaración</a>
+            {% endif %}
+          </ul>
+        {% endfor %}
+      {% endif %}
 
-    {% for criticism in product.product_metatext.metatext_criticism.all %}
-    <p>Crítica: {{ criticism.description|default:"" }}</p>
-    {% endfor %}
+      {% if product.product_metatext.metatext_criticism.all %}
+        <div>
+          <strong>Críticas</strong>
+        </div>
+        {% for criticism in product.product_metatext.metatext_criticism.all %}
+          <ul>
+            <p>{{ criticism.description|default:"" }}</p>
+            {% if criticism.link %}
+              <a href="{{ criticism.link }}" target="_blank">Enlace a la crítica</a>
+            {% endif %}
+          </ul>
+        {% endfor %}
+      {% endif %}
 
-    {% for press_article in product.product_metatext.metatext_press_article.all %}
-    <p>Artículo de prensa: {{ press_article.description|default:"" }}</p>
-    {% endfor %}
+      {% if product.product_metatext.metatext_press_article.all %}
+        <div>
+          <strong>Críticas</strong>
+        </div>
+        {% for press_article in product.product_metatext.metatext_press_article.all %}
+          <ul>
+            <p>{{ press_article.description|default:"" }}</p>
+            {% if press_article.link %}
+              <a href="{{ press_article.link }}" target="_blank">Enlace al artículo</a>
+            {% endif %}
+          </ul>
+        {% endfor %}
+      {% endif %}
 
-    {% for social_network in product.product_metatext.metatext_social_networks.all %}
-    <p>Social Network: {{ social_network.description|default:"" }}</p>
-    {% endfor %}
+      {% if product.product_metatext.metatext_social_networks.all %}
+        <div>
+          <strong>Críticas</strong>
+        </div>
+        {% for social_network in product.product_metatext.metatext_social_networks.all %}
+          <ul>
+            <p>{{ social_network.description|default:"" }}</p>
+            {% if social_network.link %}
+              <a href="{{ social_network.link }}" target="_blank">Enlace</a>
+            {% endif %}
+          </ul>
+        {% endfor %}
+      {% endif %}
 
-    {% for blog in product.product_metatext.metatext_blogs.all %}
-    <p>Blog: {{ blog.description|default:"" }}</p>
-    {% endfor %}
-    <!-- Agrega más detalles según sea necesario -->
-  </div>
+      {% if product.product_metatext.metatext_blogs.all %}
+        <div>
+          <strong>Blogs</strong>
+        </div>
+        {% for blog in product.product_metatext.metatext_blogs.all %}
+          <ul>
+            <p>{{ blog.description|default:"" }}</p>
+            {% if blog.link %}
+              <a href="{{ blog.link }}" target="_blank">Enlace</a>
+            {% endif %}
+          </ul>
+        {% endfor %}
+      {% endif %}
+
+      {% if product.product_metatext.metatext_fandoms.all %}
+        <div>
+          <strong>Fandoms</strong>
+        </div>
+        {% for fandom in product.product_metatext.metatext_fandoms.all %}
+          <ul>
+            <p>{{ fandom.type|default:"" }}: {{ fandom.name|default:"" }}</p>
+            {% if fandom.link %}
+              <a href="{{ fandom.link }}" target="_blank">Enlace</a>
+            {% endif %}
+          </ul>
+        {% endfor %}
+      {% endif %}
+    </div>
+  {% endif %}
+
+
+ 
+  <!-- TRASVASES MEDIALES -->
   <div>
     <h2>Trasvases mediales</h2>
     {% if product.product_medialTransfer %}
@@ -206,25 +268,25 @@
     {% else %}
     <p>Transmediality: No disponible</p>
     {% endif %}
-    <!-- Agrega más detalles según sea necesario -->
     {% else %}
     <p>No hay información de trasvase medial disponible</p>
     {% endif %}
   </div>
-  <h3>Bibliografía:</h3>
+
+  <!-- BIBLIOGRAFIA TERMINADO-->
+  
   {% if product.product_bibliography %}
-  <ul>
-    <li>Estudios de Tradición y Recepción Clásica: {{
-      product.product_bibliography.studies_tradition_classical_reception|urlize|linebreaks }}</li>
-    <li>Otros estudios: {{ product.product_bibliography.other_studies }}</li>
-    <!-- Agrega más detalles según sea necesario -->
-  </ul>
-  {% else %}
-  <p>No hay información de bibliografía para este producto.</p>
+  <div>
+    <h2>Bibliografía:</h2>
+    {% if  product.product_bibliography.studies_tradition_classical_reception %}
+      <strong>Estudios de Tradición y Recepción Clásica</strong>
+      <p>{{product.product_bibliography.studies_tradition_classical_reception|urlize|linebreaks }}</p>
+    {% endif %}
+    {% if  product.product_bibliography.other_studies%}
+    <strong>Otros estudios</strong>  
+     <p>{{ product.product_bibliography.other_studies|urlize|linebreaks }}</p>
+    {% endif %}
+  </div>
   {% endif %}
-  <!-- Agrega más bloques según los modelos de tus productos -->
-
-
-<!-- Puedes seguir agregando secciones con más detalles según tus modelos -->
 
 {% endblock %}
