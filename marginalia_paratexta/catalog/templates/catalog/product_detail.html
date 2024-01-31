@@ -1,10 +1,230 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block content %}
-  <h1>Title: {{ product.title }}</h1>
-  
-  <!-- Accede a los campos adicionales definidos en la vista -->
-    <p><strong>Studies Tradition Classical Reception:</strong> {{ hola }}</p>
-    <!-- Agrega más campos adicionales según sea necesario -->
+<h1>{{ product.title }}</h1>
+
+<div>
+  <h2>Información general</h2>
+  <p>ID: {{ product.id }}</p>
+  <p>Última modificación: {{ product.last_modified }}</p>
+</div>
+
+<div>
+  <h2>Detalles de la creación</h2>
+  <p>Título original: {{ product.creation.original_title }}</p>
+  <p>Subtítulos, capítulos y entregas: {{ product.creation.subtitles }}</p>
+  <p>Autoría: {{ product.creation.authorship }}</p>
+  <p>Año de publicación: {{ product.creation.publication_year }}</p>
+  <p>Sinopsis: {{ product.creation.synopsis }}</p>
+
+  <h3>Países relacionados:</h3>
+  <ul>
+    {% for country in product.creation.paises.all %}
+    <li>{{ country.name }}</li>
+    {% endfor %}
+  </ul>
+
+  <h3>Palabras clave:</h3>
+  <ul>
+    {% for keyword in product.creation.palabras_clave.all %}
+    <li>{{ keyword.name }}</li>
+    {% endfor %}
+  </ul>
+</div>
+  <!-- Agrega más detalles según sea necesario -->
+
+
+<!-- HIPOTEXTO TERMINADO-->
+{% if product.product_hipotext %}
+<h2>Hipotexto</h2>
+  {% if product.product_hipotext.hipotext_classic_sources.all %}
+    <div>
+      <h4>Fuentes Clásicas</h4>
+      <ul>
+        {% for classic_source in product.product_hipotext.hipotext_classic_sources.all %}
+          <li><p>{{ classic_source.name|default:"" }} {{ classic_source.title|default:"" }} {{ classic_source.reference|default:""}}</p></li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+  {% if product.product_hipotext.hipotext_other_sources.all %}
+    <div>
+      <h4>Otras Fuentes</h4>
+      <ul>
+        {% for other_source in product.product_hipotext.hipotext_other_sources.all %}
+          <li><p>{{ other_source.name|default:"" }} {{ other_source.title|default:"" }} {{ other_source.reference|default:"" }}</p></li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+  {% if product.product_hipotext.hipotext_documentary_sources.all %}
+    <div>
+      <h4>Fuentes Documentales</h4>
+      <ul>
+        {% for documentary_source in product.product_hipotext.hipotext_documentary_sources.all %}
+          <li><p>{{ documentary_source.name|default:"" }} {{ documentary_source.title|default:"" }} {{documentary_source.reference|default:"" }}</p></li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+{% endif %}
+
+
+<!-- PARATEXTO TERMINADO-->
+  {% if product.product_paratext %}
+    <div>
+      <h2>Paratexto</h2>
+      {% if product.product_paratext.introduction %}
+        <strong>Introducción</strong>
+        <p>{{ product.product_paratext.introduction }}</p>
+      {% endif %}
+      {% if product.product_paratext.prologue %}
+        <strong>Prólogo</strong>
+        <p>{{ product.product_paratext.prologue }}</p>
+      {% endif %}
+      {% if product.product_paratext.epilogue %}
+        <strong>Epílogo</strong>
+        <p>{{ product.product_paratext.epilogue }}</p>
+      {% endif %}
+      {% if product.product_paratext.notes %}
+        <strong>Notas, citas, scholia varia, ...</strong>
+        <p>{{ product.product_paratext.notes }}</p>
+      {% endif %}
+
+      {% if product.product_paratext.paratext_cover.all %}
+        <div>
+          <strong>Cartel portada, contraportada y carátula</strong>
+        </div>
+        <ul>
+          {% for cover in product.product_paratext.paratext_cover.all %}
+            {% if cover.image %}
+              <img src="{{ cover.image }}" alt="{{ cover.description}} " style="max-width: 300px;">
+            {% endif %}
+            <p>{{ cover.description|default:"" }}</p>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    
+      {% if product.product_paratext.paratext_adstrailer.all %}
+        <div>
+          <strong>Anuncios y tráileres</strong>
+        </div>
+        <ul>
+          {% for adstrailer in product.product_paratext.paratext_adstrailer.all %}
+            {% if adstrailer.image %}
+              <img src="{{ adstrailer.image }}" alt="{{ adstrailer.description}} " style="max-width: 300px;">
+            {% endif %}
+            <p>{{ adstrailer.description|default:"" }}</p>
+            {% if adstrailer.videoclip %}
+              <a href="{{ adstrailer.videoclip }}" target="_blank">Enlace al tráiler</a>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      {% if product.product_paratext.paratext_extras.all %}
+        <div>
+          <strong>Extras</strong>
+        </div>
+        <ul>
+          {% for extra in product.product_paratext.paratext_extras.all %}
+            {% if extra.image %}
+              <img src="{{ extra.image }}" alt="{{ extra.description}} " style="max-width: 300px;">
+            {% endif %}
+            <p>{{ extra.description|default:"" }}</p>
+            {% if extra.videoclip %}
+              <a href="{{ extra.videoclip }}" target="_blank">Enlace al extra</a>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      {% if product.product_paratext.paratext_rulebook.all %}
+        <div>
+          <strong>Libros de reglas</strong>
+        </div>
+        <ul>
+          {% for rulebook in product.product_paratext.paratext_rulebook.all %}
+            {% if rulebook.image %}
+              <img src="{{ rulebook.image }}" alt="{{ rulebook.description}} " style="max-width: 300px;">
+            {% endif %}
+            <p>{{ rulebook.description|default:"" }}</p>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      {% if product.product_paratext.paratext_videoclip.all %}
+      <div>
+        <strong>Videoclips y actuaciones en directo</strong>
+      </div>
+      <ul>
+        {% for videoclip in product.product_paratext.paratext_videoclip.all %}
+          {% if videoclip.image %}
+            <img src="{{ videoclip.image }}" alt="{{ videoclip.description}} " style="max-width: 300px;">
+          {% endif %}
+          <p>{{ videoclip.description|default:"" }}</p>
+          {% if videoclip.videoclip %}
+            <a href="{{ videoclip.videoclip }}" target="_blank">Enlace al videoclip</a>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% endif %}
+    </div>
+  {% endif %}
+
+  <!-- PARATEXTO TERMINADO-->
+  <div>
+    <h2>Metatextos</h2>
+
+    {% for declaration in product.product_metatext.metatext_declarations.all %}
+    <p>Declaración autorizada: {{ declaration.description|default:"" }}</p>
+    {% endfor %}
+
+    {% for criticism in product.product_metatext.metatext_criticism.all %}
+    <p>Crítica: {{ criticism.description|default:"" }}</p>
+    {% endfor %}
+
+    {% for press_article in product.product_metatext.metatext_press_article.all %}
+    <p>Artículo de prensa: {{ press_article.description|default:"" }}</p>
+    {% endfor %}
+
+    {% for social_network in product.product_metatext.metatext_social_networks.all %}
+    <p>Social Network: {{ social_network.description|default:"" }}</p>
+    {% endfor %}
+
+    {% for blog in product.product_metatext.metatext_blogs.all %}
+    <p>Blog: {{ blog.description|default:"" }}</p>
+    {% endfor %}
+    <!-- Agrega más detalles según sea necesario -->
+  </div>
+  <div>
+    <h2>Trasvases mediales</h2>
+    {% if product.product_medialTransfer %}
+    <p>Hipertexto: {{ product.product_medialTransfer.hypertext|default:"" }}</p>
+    {% if product.product_medialTransfer.transmediality %}
+    <p>Transmediality: <a href="{% url 'creation-detail' pk=product.product_medialTransfer.transmediality.id %}">{{ product.product_medialTransfer.transmediality.title }}</a></p>
+    {% else %}
+    <p>Transmediality: No disponible</p>
+    {% endif %}
+    <!-- Agrega más detalles según sea necesario -->
+    {% else %}
+    <p>No hay información de trasvase medial disponible</p>
+    {% endif %}
+  </div>
+  <h3>Bibliografía:</h3>
+  {% if product.product_bibliography %}
+  <ul>
+    <li>Estudios de Tradición y Recepción Clásica: {{
+      product.product_bibliography.studies_tradition_classical_reception|urlize|linebreaks }}</li>
+    <li>Otros estudios: {{ product.product_bibliography.other_studies }}</li>
+    <!-- Agrega más detalles según sea necesario -->
+  </ul>
+  {% else %}
+  <p>No hay información de bibliografía para este producto.</p>
+  {% endif %}
+  <!-- Agrega más bloques según los modelos de tus productos -->
+
+
+<!-- Puedes seguir agregando secciones con más detalles según tus modelos -->
 
 {% endblock %}
