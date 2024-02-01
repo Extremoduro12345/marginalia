@@ -2,30 +2,73 @@
 
 {% block content %}
 <h1>{{ product.title }}</h1>
-
+<!-- DETALLES DE LA CREACION CONJUNTOS TEREMINADO-->
 <div>
   <h2>Detalles de la creación</h2>
-  <p>Título original: {{ product.creation.original_title }}</p>
-  <p>Subtítulos, capítulos y entregas: {{ product.creation.subtitles }}</p>
-  <p>Autoría: {{ product.creation.authorship }}</p>
-  <p>Año de publicación: {{ product.creation.publication_year }}</p>
-  <p>Sinopsis: {{ product.creation.synopsis }}</p>
+  <p><strong>Formato:</strong> {{ type }}</p>
+  <p><strong>Título original: </strong>{{ product.creation.original_title }}</p>
+  {% if  product.creation.subtitles %}
+    <p><strong>Subtítulos, capítulos y entregas: </strong>{{ product.creation.subtitles }}</p>
+  {% endif %}
+  {% if  product.creation.authorship %}
+    <p><strong>Autoría: </strong>{{ product.creation.authorship }}</p>
+  {% endif %}
+  <p><strong>Año de publicación: </strong>{{ product.creation.publication_year }}</p>
+  {% if  product.creation.synopsis %}
+    <p><strong>Sinopsis: </strong>{{ product.creation.synopsis }}</p>
+  {% endif %}
 
-  <h3>Países relacionados:</h3>
-  <ul>
-    {% for country in product.creation.paises.all %}
-    <li>{{ country.name }}</li>
-    {% endfor %}
-  </ul>
 
-  <h3>Palabras clave:</h3>
-  <ul>
-    {% for keyword in product.creation.palabras_clave.all %}
-    <li>{{ keyword.name }}</li>
-    {% endfor %}
-  </ul>
+
+  <!-- DETALLES DE LA MEDIACREATION TERMINADO-->
+  {% if type == "Película" or type == "Videojuego" or type == "Serie de television" %}
+    {% if  product.creation.idioma_original %}
+      <p><strong>Idioma original: </strong>{{ product.creation.idioma_original }}</p>
+    {% endif %}
+    {% if  product.creation.IMDb %}
+      <p><strong>ImdDB: </strong><a href="{{ product.creation.IMDb }}" target="_blank">Enlace</a></p>
+    {% endif %}
+    {% if  product.creation.commertial_editions %}
+      <p><strong>Ediciones comerciales: </strong>{{ product.creation.commertial_editions }}</p>
+    {% endif %}
+    {% if product.creation.mediacreation_other_countries_debut.all %}
+      <h5>Estreno en otros países:</h5>
+      <ul>
+        {% for debut in product.creation.mediacreation_other_countries_debut.all %}
+          <li>
+            <p>{{ debut.pais }}, {{debut.description}}, [{{ debut.year }}]</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endif %}
+
+
+  {% if product.creation.paises.all %}
+    <h5>Países relacionados:</h5>
+    <ul>
+      {% for country in product.creation.paises.all %}
+        <li>{{ country.name }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if product.creation.palabras_clave.all %}
+    <h5>Palabras clave:</h5>
+    <ul>
+      {% for keyword in product.creation.palabras_clave.all %}
+      <li>{{ keyword.name }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 </div>
-  <!-- Agrega más detalles según sea necesario -->
+
+<!-- Agrega más detalles según sea necesario -->
+{% with product_creation=product.creation %}
+
+<p>Artista: {{ product_creation.producer }}</p>
+
+{% endwith %}
 
 
 <!-- HIPOTEXTO TERMINADO-->
@@ -258,21 +301,19 @@
 
 
  
-  <!-- TRASVASES MEDIALES -->
-  <div>
-    <h2>Trasvases mediales</h2>
-    {% if product.product_medialTransfer %}
-    <p>Hipertexto: {{ product.product_medialTransfer.hypertext|default:"" }}</p>
-    {% if product.product_medialTransfer.transmediality %}
-    <p>Transmediality: <a href="{% url 'creation-detail' pk=product.product_medialTransfer.transmediality.id %}">{{ product.product_medialTransfer.transmediality.title }}</a></p>
-    {% else %}
-    <p>Transmediality: No disponible</p>
-    {% endif %}
-    {% else %}
-    <p>No hay información de trasvase medial disponible</p>
-    {% endif %}
-  </div>
-
+  <!-- TRASVASES MEDIALES TERMINADO-->
+  {% if  product.product_medialTransfer %}
+    <div>
+      <h2>Trasvases mediales</h2>
+      {% if product.product_medialTransfer.hypertext %}
+        <p>Hipertexto: {{ product.product_medialTransfer.hypertext|default:"" }}</p>
+      {% endif %}
+      {% if product.product_medialTransfer.Transmedialidad %}
+        <p>Transmediality: <a href="{% url 'creation-detail' pk=product.product_medialTransfer.Transmedialidad.id %}">{{ product.product_medialTransfer.Transmedialidad.title }}</a></p>
+      {% endif %}
+      
+    </div>
+  {% endif %}
   <!-- BIBLIOGRAFIA TERMINADO-->
   
   {% if product.product_bibliography %}
@@ -282,7 +323,7 @@
       <strong>Estudios de Tradición y Recepción Clásica</strong>
       <p>{{product.product_bibliography.studies_tradition_classical_reception|urlize|linebreaks }}</p>
     {% endif %}
-    {% if  product.product_bibliography.other_studies%}
+    {% if  product.product_bibliography.other_studies %}
     <strong>Otros estudios</strong>  
      <p>{{ product.product_bibliography.other_studies|urlize|linebreaks }}</p>
     {% endif %}
