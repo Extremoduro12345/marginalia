@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>{{ product.title }}</h1>
-<!-- DETALLES DE LA CREACION CONJUNTOS TEREMINADO-->
+<!-- DETALLES DE LA CREACION CONJUNTOS TERMINADO-->
 <div>
   <h2>Detalles de la creación</h2>
   <p><strong>Formato:</strong> {{ type }}</p>
@@ -17,8 +17,26 @@
   {% if  product.creation.synopsis %}
     <p><strong>Sinopsis: </strong>{{ product.creation.synopsis }}</p>
   {% endif %}
-
-
+  {% if product.creation.creation_award.all %}
+    <h5>Premios:</h5>
+    <ul>
+      {% for award in product.creation.creation_award.all %}
+        <li>
+          <p>{{ award.institution_name }}, {{award.text}}, [{{ award.year }}]</p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  {% if product.creation.creation_other_language.all %}
+    <h5>Título en otros idiomas:</h5>
+    <ul>
+      {% for title in product.creation.creation_other_language.all %}
+        <li>
+          <p>{{ title.idioma }}, {{title.title}}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 
   <!-- DETALLES DE LA MEDIACREATION TERMINADO-->
   {% if type == "Película" or type == "Videojuego" or type == "Serie de television" %}
@@ -43,6 +61,46 @@
     {% endif %}
   {% endif %}
 
+  <!-- DETALLES DE LA LIBRARYCREATION TERMINADO-->
+  {% if type == "Novela" or type == "Comic" or type == "Juego de mesa" %}
+    {% if  product.creation.original_edition %}
+      <p><strong>Edición original: </strong>{{ product.creation.original_edition.isbn }} [{{product.creation.original_edition.year}}], {{product.creation.original_edition.editorial}}</p>
+    {% endif %}
+    {% if product.creation.library_creation_other_language_edition.all %}
+      <h5>Ediciones en otros idiomas</h5>
+      <ul>
+        {% for edition in product.creation.library_creation_other_language_edition.all %}
+          <li>
+            <p>{{ edition.location }} [{{ edition.year }}], traducido al {{edition.idioma}}, por {{edition.traductor}} ({{edition.editorial}}), con isbn: {{edition.isbn}}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% if product.creation.library_creation_reissue.all %}
+    <h5>Reediciones</h5>
+    <ul>
+      {% for edition in product.creation.library_creation_reissue.all %}
+        <li>
+          <p>{{ edition.location }} [{{ edition.year }}], traducido por {{edition.traductor}} ({{edition.editorial}}), con isbn: {{edition.isbn}}</p>
+        </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    <!-- DETALLES DE LA NOVELA TERMINADO-->
+    {% if  product.creation.authorship %}
+      <p><strong>Autoría: </strong>{{ product.creation.authorship }}</p>
+    {% endif %}
+    {% if product.creation.genero.all %}
+      <h5>Géneros</h5>
+      <ul>
+        {% for genero in product.creation.genero.all %}
+          <li>
+            <p>{{genero }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endif %}
 
   {% if product.creation.paises.all %}
     <h5>Países relacionados:</h5>
