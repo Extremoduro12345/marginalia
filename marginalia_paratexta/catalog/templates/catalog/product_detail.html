@@ -49,6 +49,29 @@
     {% if  product.creation.commertial_editions %}
       <p><strong>Ediciones comerciales: </strong>{{ product.creation.commertial_editions }}</p>
     {% endif %}
+
+    <!-- DETALLES DE VIDEOGAME TERMINADO-->
+    {% if type == "Videojuego" %}
+      {% if  product.creation.batch_number %}
+        <p><strong>Número de entregas: </strong>{{ product.creation.batch_number }}</p>
+      {% endif %}
+      {% if  product.creation.development %}
+        <p><strong>Desarrollo: </strong>{{ product.creation.development }}</p>
+      {% endif %}
+      {% if  product.creation.distribution %}
+        <p><strong>Distribución: </strong>{{ product.creation.distribution }}</p>
+      {% endif %}
+      {% if  product.creation.design %}
+        <p><strong>Diseño: </strong>{{ product.creation.design }}</p>
+      {% endif %}
+      {% if  product.creation.plataforms %}
+        <p><strong>Plataformas: </strong>{{ product.creation.plataforms }}</p>
+      {% endif %}
+      {% if  product.creation.official_website %}
+        <a href="{{ product.creation.official_website }}" target="_blank">Página oficial</a>
+      {% endif %}
+    {% endif %}
+
     {% if product.creation.mediacreation_other_countries_debut.all %}
       <h5>Estreno en otros países:</h5>
       <ul>
@@ -86,22 +109,94 @@
       {% endfor %}
     </ul>
     {% endif %}
+
     <!-- DETALLES DE LA NOVELA TERMINADO-->
-    {% if  product.creation.authorship %}
-      <p><strong>Autoría: </strong>{{ product.creation.authorship }}</p>
+    {% if type == "Novela" %}
+      {% if  product.creation.authorship %}
+        <p><strong>Autoría: </strong>{{ product.creation.authorship }}</p>
+      {% endif %}
     {% endif %}
-    {% if product.creation.genero.all %}
-      <h5>Géneros</h5>
-      <ul>
-        {% for genero in product.creation.genero.all %}
-          <li>
-            <p>{{genero }}</p>
-          </li>
-        {% endfor %}
-      </ul>
+
+    <!-- DETALLES DE BOARDGAME TERMINADO--> 
+    {% if type == "Juego de mesa" %}
+      <p><strong>Número de jugadores: </strong>{{ product.creation.number_players }}</p>
+      <p><strong>Edad: </strong>{{ product.creation.age }}</p>
+      {% if  product.creation.author %}
+        <p><strong>Autoría: </strong>{{ product.creation.author }}</p>
+      {% endif %}
+      {% if  product.creation.ilustrator %}
+        <p><strong>Ilustrador: </strong>{{ product.creation.ilustrator }}</p>
+      {% endif %}
+      {% if  product.creation.developer %}
+        <p><strong>Desarrollador: </strong>{{ product.creation.developer }}</p>
+      {% endif %}
+      {% if  product.creation.design %}
+        <p><strong>Diseño: </strong>{{ product.creation.design }}</p>
+      {% endif %}
+    {% endif %}
+
+    <!-- DETALLES DE COMIC TERMINADO-->
+    {% if type == "Comic" %}
+      {% if  product.creation.script %}
+        <p><strong>Guión: </strong>{{ product.creation.script }}</p>
+      {% endif %}
+      {% if  product.creation.design %}
+        <p><strong>Diseño: </strong>{{ product.creation.design }}</p>
+      {% endif %}
+      {% if product.creation.colecciones.all %}
+        <h5>Colecciones</h5>
+        <ul>
+          {% for coleccion in product.creation.colecciones.all %}
+            <li>
+              <p>{{ coleccion.collection_name|default:"" }}, {{ coleccion.year }} ({{coleccion.editorial}})</p>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endif %}    
+  {% endif %}
+
+  <!-- DETALLES DE MUSIC TERMINADO-->
+  {% if type == "Música" %}
+    {% if  product.creation.idioma_original %}
+      <p><strong>Idioma Original: </strong>{{ product.creation.idioma_original }}</p>
+    {% endif %}
+    {% if  product.creation.artist %}
+      <p><strong>Artista: </strong>{{ product.creation.artist }}</p>
+    {% endif %}
+    {% if  product.creation.album %}
+      <p><strong>Álbum: </strong>{{ product.creation.album }}</p>
+    {% endif %}
+    {% if  product.creation.discography %}
+      <p><strong>Discográfica: </strong>{{ product.creation.discography }}</p>
+    {% endif %}
+    {% if  product.creation.composer %}
+      <p><strong>Compositor: </strong>{{ product.creation.composer }}</p>
+    {% endif %}
+    {% if  product.creation.lyricist %}
+      <p><strong>Letrista: </strong>{{ product.creation.lyricist }}</p>
+    {% endif %}
+    {% if  product.creation.mixing %}
+      <p><strong>Mezcla: </strong>{{ product.creation.mixing }}</p>
+    {% endif %}
+    {% if  product.creation.remastering %}
+      <p><strong>Remasterización: </strong>{{ product.creation.remastering }}</p>
+    {% endif %}
+    {% if  product.creation.cover_design %}
+      <p><strong>Diseño de carátula: </strong>{{ product.creation.cover_design }}</p>
     {% endif %}
   {% endif %}
 
+  {% if product.creation.genero.all %}
+    <h5>Géneros</h5>
+    <ul>
+      {% for genero in product.creation.genero.all %}
+        <li>
+          <p>{{genero }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
   {% if product.creation.paises.all %}
     <h5>Países relacionados:</h5>
     <ul>
