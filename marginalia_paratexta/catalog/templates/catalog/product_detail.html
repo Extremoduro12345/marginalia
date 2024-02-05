@@ -72,12 +72,177 @@
       {% endif %}
     {% endif %}
 
+        <!-- DETALLES DE TVSERIE TERMINADO-->
+        {% if type == "Serie de television" %}
+          {% if  product.creation.debut %}
+            <p><strong>Año de debut: </strong>{{ product.creation.debut }}</p>
+          {% endif %}
+          {% if  product.creation.number_seasons %}
+            <p><strong>Número de temporadas: </strong>{{ product.creation.number_seasons }}</p>
+          {% endif %}
+          {% if  product.creation.number_chapters %}
+            <p><strong>Número de capítulos: </strong>{{ product.creation.number_chapters }}</p>
+          {% endif %}
+          {% if  product.creation.remastering %}
+            <p><strong>Reedición: </strong>{{ product.creation.remastering }}</p>
+          {% endif %}
+          {% if  product.creation.direction %}
+            <p><strong>Dirección: </strong>{{ product.creation.direction }}</p>
+          {% endif %}
+          {% if  product.creation.producer %}
+            <p><strong>Productora: </strong>{{ product.creation.producer }}</p>
+          {% endif %}
+          {% if  product.creation.original_idea %}
+            <p><strong>Idea original: </strong>{{ product.creation.original_idea }}</p>
+          {% endif %}
+          {% if  product.creation.cast %}
+            <p><strong>Reparto: </strong>{{ product.creation.cast }}</p>
+          {% endif %}
+          {% if  product.creation.music %}
+            <p><strong>Música: </strong>{{ product.creation.music }}</p>
+          {% endif %}
+          {% if  product.creation.costume %}
+            <p><strong>Vestuario: </strong>{{ product.creation.costume }}</p>
+          {% endif %}
+          {% if  product.creation.sound %}
+            <p><strong>Sonido: </strong>{{ product.creation.sound }}</p>
+          {% endif %}
+          {% if  product.creation.other_data %}
+            <p><strong>Otros datos: </strong>{{ product.creation.other_data }}</p>
+          {% endif %}
+          {% if  product.creation.remake %}
+            <p><strong>Info remake: </strong>{{ product.creation.remake }}</p>
+          {% endif %}
+          {% if  product.creation.remake_link %}
+            <a href="{% url 'creation-detail' pk=product.creation.remake_link.id %}">Enlace a Remake</a>
+          {% endif %}
+        {% endif %}
+
+        <!-- DETALLES DE MOVIE TERMINADO-->
+        {% if type == "Película" %}
+          {% if  product.creation.script %}
+            <p><strong>Guión: </strong>{{ product.creation.script }}</p>
+          {% endif %}
+          {% if  product.creation.remastering %}
+            <p><strong>Reedición: </strong>{{ product.creation.remastering }}</p>
+          {% endif %}
+          {% if  product.creation.direction %}
+            <p><strong>Dirección: </strong>{{ product.creation.direction }}</p>
+          {% endif %}
+          {% if  product.creation.producer %}
+            <p><strong>Productora: </strong>{{ product.creation.producer }}</p>
+          {% endif %}
+          {% if  product.creation.earnings %}
+            <p><strong>Taquilla: </strong>{{ product.creation.earnings }}</p>
+          {% endif %}
+          {% if  product.creation.cast %}
+            <p><strong>Reparto: </strong>{{ product.creation.cast }}</p>
+          {% endif %}
+          {% if  product.creation.music %}
+            <p><strong>Música: </strong>{{ product.creation.music }}</p>
+          {% endif %}
+          {% if  product.creation.costume %}
+            <p><strong>Vestuario: </strong>{{ product.creation.costume }}</p>
+          {% endif %}
+          {% if  product.creation.sound %}
+            <p><strong>Sonido: </strong>{{ product.creation.sound }}</p>
+          {% endif %}
+          {% if  product.creation.other_data %}
+            <p><strong>Otros datos: </strong>{{ product.creation.other_data }}</p>
+          {% endif %}
+          {% if  product.creation.remake %}
+            <p><strong>Info remake: </strong>{{ product.creation.remake }}</p>
+          {% endif %}
+          {% if  product.creation.remake_link %}
+            <a href="{% url 'creation-detail' pk=product.creation.remake_link.id %}">Enlace a Remake</a>
+          {% endif %}
+        {% endif %}
+
     {% if product.creation.mediacreation_other_countries_debut.all %}
       <h5>Estreno en otros países:</h5>
       <ul>
         {% for debut in product.creation.mediacreation_other_countries_debut.all %}
           <li>
             <p>{{ debut.pais }}, {{debut.description}}, [{{ debut.year }}]</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endif %}
+
+  <!-- DETALLES DE TEATRO -->
+  {% if type == "Teatro" %}
+    {% if  product.creation.idioma_original %}
+      <p><strong>Idioma original: </strong>{{ product.creation.idioma_original }}</p>
+    {% endif %}
+    {% if  product.creation.estreno %}
+      <p><strong>Estreno: </strong>{{ product.creation.estreno.location }} [{{ product.creation.estreno.date }}]</p>
+    {% endif %}    
+    {% if  product.creation.stage_direction %}
+      <p><strong>Dirección escénica: </strong>{{ product.creation.stage_direction }}</p>
+    {% endif %}
+    {% if  product.creation.producer %}
+      <p><strong>Productora: </strong>{{ product.creation.producer }}</p>
+    {% endif %}
+    {% if  product.creation.cast %}
+      <p><strong>Reparto: </strong>{{ product.creation.cast }}</p>
+    {% endif %}
+    {% if  product.creation.music %}
+      <p><strong>Música: </strong>{{ product.creation.music }}</p>
+    {% endif %}
+    {% if  product.creation.lighting %}
+      <p><strong>Iluminación: </strong>{{ product.creation.lighting }}</p>
+    {% endif %}
+    {% if  product.creation.sound %}
+      <p><strong>Sonido: </strong>{{ product.creation.sound }}</p>
+    {% endif %}
+    {% if  product.creation.other_data %}
+      <p><strong>Otros datos: </strong>{{ product.creation.other_data }}</p>
+    {% endif %}
+    {% if  product.creation.dramatic_text %}
+      <p><strong>Texto dramático: </strong>{{ product.creation.dramatic_text }}</p>
+    {% endif %}
+    {% if  product.creation.repositions %}
+      <p><strong>Reposiciones: </strong>{{ product.creation.repositions|urlize|linebreaks }}</p>
+    {% endif %}
+    {% if  product.creation.links %}
+      <p><strong>Links: </strong>{{ product.creation.links|urlize|linebreaks }}</p>
+    {% endif %}
+    {% if  product.creation.remake %}
+      <p><strong>Info remake: </strong>{{ product.creation.remake }}</p>
+    {% endif %}
+    {% if  product.creation.remake_link %}
+      <a href="{% url 'creation-detail' pk=product.creation.remake_link.id %}">Enlace a Remake</a>
+    {% endif %}
+
+    {% if product.creation.theatre_images.all %}
+      <h5>Imagenes de la obra</h5>
+      <ul>
+        {% for theater_image in product.creation.theatre_images.all %}
+          <li>
+            <img src="{{ theater_image.image }}" alt="Imagen de la obra" style="max-width: 300px;">
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% if product.creation.theatre_staging.all %}
+      <h5>Puestas en escena</h5>
+      <ul>
+        {% for stage in product.creation.theatre_staging.all %}
+          <li>
+            {% if  product.creation.artistic_direction %}
+              <p><strong>Dirección atrística: </strong>{{ product.creation.artistic_direction }}</p>
+            {% endif %}
+            {% if  product.creation.producer %}
+              <p><strong>Producción: </strong>{{ product.creation.producer }}</p>
+            {% endif %}    
+            {% if  product.creation.cast %}
+              <p><strong>Reparto: </strong>{{ product.creation.cast }}</p>
+            {% endif %}
+            {% if  product.creation.location %}
+              <p><strong>Lugar: </strong>{{ product.creation.location }}</p>
+            {% endif %}          
           </li>
         {% endfor %}
       </ul>
@@ -215,13 +380,6 @@
     </ul>
   {% endif %}
 </div>
-
-<!-- Agrega más detalles según sea necesario -->
-{% with product_creation=product.creation %}
-
-<p>Artista: {{ product_creation.producer }}</p>
-
-{% endwith %}
 
 
 <!-- HIPOTEXTO TERMINADO-->
