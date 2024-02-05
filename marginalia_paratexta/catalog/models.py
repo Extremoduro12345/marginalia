@@ -132,7 +132,7 @@ class Movie(MediaCreation):
     other_data = models.TextField('Otros datos',  null=True, blank=True)
     earnings = models.IntegerField("Taquilla", null=True, blank=True)
     remake = models.TextField('Remake info', null=True, blank=True)
-    remake_link =  models.OneToOneField('Product', on_delete=models.SET_NULL, blank=True, null=True, name='Remake link', related_name="remake_movie")
+    remake_link =  models.OneToOneField('Product', on_delete=models.SET_NULL, blank=True, null=True, name='remake_link', related_name="remake_movie")
     genero = models.ManyToManyField(Genre, blank=True)
     class Meta:
         verbose_name = "Película"
@@ -152,7 +152,7 @@ class TVSerie(MediaCreation):
     sound = models.TextField('Sonido',  null=True, blank=True)
     other_data = models.TextField('Otros datos', null=True, blank=True)
     remake = models.TextField('Remake info',  null=True, blank=True)
-    remake_link =  models.OneToOneField('Product', on_delete=models.SET_NULL, null=True, blank=True, name='Remake link', related_name="remake_tvserie")
+    remake_link =  models.OneToOneField('Product', on_delete=models.SET_NULL, null=True, blank=True, name='remake_link', related_name="remake_tvserie")
     genero = models.ManyToManyField(Genre, blank=True)
     class Meta:
         verbose_name = "Serie TV"
@@ -222,7 +222,7 @@ class Theatre(Creation):
     other_data = models.TextField('Otros datos',  null=True, blank=True)
     dramatic_text = models.TextField("Texto dramático", null=True, blank=True)
     remake = models.TextField('Remake info',  null=True, blank=True)
-    remake_link =  models.OneToOneField('Product', on_delete=models.SET_NULL, null=True, blank=True, name='Remake link', related_name="remake_theatre")
+    remake_link =  models.OneToOneField('Product', on_delete=models.SET_NULL, null=True, blank=True, name='remake_link', related_name="remake_theatre")
     repositions = models.TextField('Reposiciones',  null=True, blank=True)
     links = models.TextField('Links',  null=True, blank=True)
     genero = models.ManyToManyField(Genre, blank=True)
