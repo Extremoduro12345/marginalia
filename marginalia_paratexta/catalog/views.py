@@ -1,8 +1,36 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from .models import BoardGame, Comic, Movie, Musica, Novel, Product, MedialTransfers, Theatre, Videogame
-from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
+from django.views import View
+from django.contrib import messages
+from .forms import SignUpForm
 
+class SignUpView(View):
+    def get(self, request):
+        form = SignUpForm()
+        return render(request, 'registration/signup.html', {'form': form})
+
+    def post(self, request):
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            # Procesar el formulario y realizar el registro
+            # Ejemplo: Guardar el usuario en la base de datos
+            user = form.save()
+            
+            # Puedes agregar acciones adicionales aquí si es necesario, como enviar un correo de confirmación
+            
+            return redirect('login')  # Redirigir al inicio de sesión después del registro
+        else:
+            error_messages = form.errors.values()  # Obtener todos los mensajes de error
+            for message in error_messages:
+                messages.error(request, message)
+            return render(request, 'registration/signup.html', {'form': form})
+
+@login_required
 def index(request):
     """View function for home page of site."""
 
@@ -16,15 +44,17 @@ def index(request):
     # Render the HTML template index.html with the data in the context variable
     return render(request, 'index.html', context=context)
 
-
-class ProductListView(generic.ListView):
+@method_decorator(login_required, name='dispatch')
+class ProductListView( generic.ListView):
     model = Product
     context_object_name = 'product_list'
 
+@method_decorator(login_required, name='dispatch')
 class TransmedialityListView(generic.ListView):
     model = MedialTransfers
     context_object_name = 'transmediality_list'
 
+@method_decorator(login_required, name='dispatch')
 class ProductDetailView(generic.DetailView):
     model = Product
 
