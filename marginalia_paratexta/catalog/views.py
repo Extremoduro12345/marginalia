@@ -1,11 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views import generic
+from django.views import generic, View
 from .models import BoardGame, Comic, Movie, Musica, Novel, Product, MedialTransfers, Theatre, Videogame
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
-from django.views import View
 from django.contrib import messages
 from .forms import SignUpForm
 
@@ -30,7 +26,6 @@ class SignUpView(View):
                 messages.error(request, message)
             return render(request, 'registration/signup.html', {'form': form})
 
-@login_required
 def index(request):
     """View function for home page of site."""
 
@@ -44,60 +39,67 @@ def index(request):
     # Render the HTML template index.html with the data in the context variable
     return render(request, 'index.html', context=context)
 
-@method_decorator(login_required, name='dispatch')
 class ProductListView( generic.ListView):
     model = Product
     context_object_name = 'product_list'
 
-@method_decorator(login_required, name='dispatch')
 class TransmedialityListView(generic.ListView):
     model = MedialTransfers
     context_object_name = 'transmediality_list'
 
-@method_decorator(login_required, name='dispatch')
 class ProductDetailView(generic.DetailView):
     model = Product
 
 def product_detail_view(request, pk):
     product = get_object_or_404(Product, pk=pk)
+    user_belongs_to_group = request.user.groups.filter(name='Marginalia Member').exists()
+
     if isinstance(product.creation, Movie):    
         context = {
             'product': product,
-            'type': "Película"
+            'type': "Película",
+            'user_belongs_to_group': user_belongs_to_group
         }
     elif isinstance(product.creation, Videogame):    
         context = {
             'product': product,
-            'type': "Videojuego"
+            'type': "Videojuego",
+            'user_belongs_to_group': user_belongs_to_group
         } 
     elif isinstance(product.creation, Musica):    
         context = {
             'product': product,
-            'type': "Música"
+            'type': "Música",
+            'user_belongs_to_group': user_belongs_to_group
         } 
     elif isinstance(product.creation, BoardGame):    
         context = {
             'product': product,
-            'type': "Juego de mesa"
+            'type': "Juego de mesa",
+            'user_belongs_to_group': user_belongs_to_group
         } 
     elif isinstance(product.creation, Comic):    
         context = {
             'product': product,
-            'type': "Comic"
+            'type': "Comic",
+            'user_belongs_to_group': user_belongs_to_group
         } 
     elif isinstance(product.creation, Novel):    
         context = {
             'product': product,
-            'type': "Novela"
+            'type': "Novela",
+            'user_belongs_to_group': user_belongs_to_group
         }
     elif isinstance(product.creation, Theatre):    
         context = {
             'product': product,
-            'type': "Teatro"
+            'type': "Teatro",
+            'user_belongs_to_group': user_belongs_to_group
         }  
     else :
         context = {
             'product': product,
-            'type': "Serie de television"
+            'type': "Serie de television",
+            'user_belongs_to_group': user_belongs_to_group
         }
     return render(request, 'catalog/product_detail.html', context=context)
