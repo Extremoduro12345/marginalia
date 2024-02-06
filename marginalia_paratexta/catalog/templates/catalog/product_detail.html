@@ -419,104 +419,106 @@
 
 
 <!-- PARATEXTO TERMINADO-->
-  {% if product.product_paratext %}
-    <div>
-      <h2>Paratextos</h2>
-      {% if product.product_paratext.introduction %}
-        <strong>Introducción</strong>
-        <p>{{ product.product_paratext.introduction }}</p>
-      {% endif %}
-      {% if product.product_paratext.prologue %}
-        <strong>Prólogo</strong>
-        <p>{{ product.product_paratext.prologue }}</p>
-      {% endif %}
-      {% if product.product_paratext.epilogue %}
-        <strong>Epílogo</strong>
-        <p>{{ product.product_paratext.epilogue }}</p>
-      {% endif %}
-      {% if product.product_paratext.notes %}
-        <strong>Notas, citas, scholia varia, ...</strong>
-        <p>{{ product.product_paratext.notes }}</p>
-      {% endif %}
+  {% if user_belongs_to_group or user.is_staff %}
+    {% if product.product_paratext %}
+      <div>
+        <h2>Paratextos</h2>
+        {% if product.product_paratext.introduction %}
+          <strong>Introducción</strong>
+          <p>{{ product.product_paratext.introduction }}</p>
+        {% endif %}
+        {% if product.product_paratext.prologue %}
+          <strong>Prólogo</strong>
+          <p>{{ product.product_paratext.prologue }}</p>
+        {% endif %}
+        {% if product.product_paratext.epilogue %}
+          <strong>Epílogo</strong>
+          <p>{{ product.product_paratext.epilogue }}</p>
+        {% endif %}
+        {% if product.product_paratext.notes %}
+          <strong>Notas, citas, scholia varia, ...</strong>
+          <p>{{ product.product_paratext.notes }}</p>
+        {% endif %}
 
-      {% if product.product_paratext.paratext_cover.all %}
-        <div>
-          <strong>Cartel portada, contraportada y carátula</strong>
-        </div>
-        {% for cover in product.product_paratext.paratext_cover.all %}
-          <ul>
-            {% if cover.image %}
-              <img src="{{ cover.image }}" alt="{{ cover.description}} " style="max-width: 300px;">
-            {% endif %}
-            <p>{{ cover.description|default:"" }}</p>
-          </ul>
-        {% endfor %}
-      {% endif %}
-    
-      {% if product.product_paratext.paratext_adstrailer.all %}
-        <div>
-          <strong>Anuncios y tráileres</strong>
-        </div>
-        {% for adstrailer in product.product_paratext.paratext_adstrailer.all %}
-          <ul>
-            {% if adstrailer.image %}
-              <img src="{{ adstrailer.image }}" alt="{{ adstrailer.description}} " style="max-width: 300px;">
-            {% endif %}
-            <p>{{ adstrailer.description|default:"" }}</p>
-            {% if adstrailer.videoclip %}
-              <a href="{{ adstrailer.videoclip }}" target="_blank">Enlace al tráiler</a>
-            {% endif %}
-          </ul>
-        {% endfor %}
-      {% endif %}
+        {% if product.product_paratext.paratext_cover.all %}
+          <div>
+            <strong>Cartel portada, contraportada y carátula</strong>
+          </div>
+          {% for cover in product.product_paratext.paratext_cover.all %}
+            <ul>
+              {% if cover.image %}
+                <img src="{{ cover.image }}" alt="{{ cover.description}} " style="max-width: 300px;">
+              {% endif %}
+              <p>{{ cover.description|default:"" }}</p>
+            </ul>
+          {% endfor %}
+        {% endif %}
+      
+        {% if product.product_paratext.paratext_adstrailer.all %}
+          <div>
+            <strong>Anuncios y tráileres</strong>
+          </div>
+          {% for adstrailer in product.product_paratext.paratext_adstrailer.all %}
+            <ul>
+              {% if adstrailer.image %}
+                <img src="{{ adstrailer.image }}" alt="{{ adstrailer.description}} " style="max-width: 300px;">
+              {% endif %}
+              <p>{{ adstrailer.description|default:"" }}</p>
+              {% if adstrailer.videoclip %}
+                <a href="{{ adstrailer.videoclip }}" target="_blank">Enlace al tráiler</a>
+              {% endif %}
+            </ul>
+          {% endfor %}
+        {% endif %}
 
-      {% if product.product_paratext.paratext_extras.all %}
-        <div>
-          <strong>Extras</strong>
-        </div>
-        {% for extra in product.product_paratext.paratext_extras.all %}
-          <ul>
-            {% if extra.image %}
-              <img src="{{ extra.image }}" alt="{{ extra.description}} " style="max-width: 300px;">
-            {% endif %}
-            <p>{{ extra.description|default:"" }}</p>
-            {% if extra.videoclip %}
-              <a href="{{ extra.videoclip }}" target="_blank">Enlace al extra</a>
-            {% endif %}
-          </ul>
-        {% endfor %}
-      {% endif %}
+        {% if product.product_paratext.paratext_extras.all %}
+          <div>
+            <strong>Extras</strong>
+          </div>
+          {% for extra in product.product_paratext.paratext_extras.all %}
+            <ul>
+              {% if extra.image %}
+                <img src="{{ extra.image }}" alt="{{ extra.description}} " style="max-width: 300px;">
+              {% endif %}
+              <p>{{ extra.description|default:"" }}</p>
+              {% if extra.videoclip %}
+                <a href="{{ extra.videoclip }}" target="_blank">Enlace al extra</a>
+              {% endif %}
+            </ul>
+          {% endfor %}
+        {% endif %}
 
-      {% if product.product_paratext.paratext_rulebook.all %}
-        <div>
-          <strong>Libros de reglas</strong>
-        </div>
-        {% for rulebook in product.product_paratext.paratext_rulebook.all %}
-          <ul>
-            {% if rulebook.image %}
-              <img src="{{ rulebook.image }}" alt="{{ rulebook.description}} " style="max-width: 300px;">
-            {% endif %}
-            <p>{{ rulebook.description|default:"" }}</p>
-          </ul>
-        {% endfor %}
+        {% if product.product_paratext.paratext_rulebook.all %}
+          <div>
+            <strong>Libros de reglas</strong>
+          </div>
+          {% for rulebook in product.product_paratext.paratext_rulebook.all %}
+            <ul>
+              {% if rulebook.image %}
+                <img src="{{ rulebook.image }}" alt="{{ rulebook.description}} " style="max-width: 300px;">
+              {% endif %}
+              <p>{{ rulebook.description|default:"" }}</p>
+            </ul>
+          {% endfor %}
+        {% endif %}
+        {% if product.product_paratext.paratext_videoclip.all %}
+          <div>
+            <strong>Videoclips y actuaciones directo</strong>
+          </div> 
+          {% for videoclip in product.product_paratext.paratext_videoclip.all %}
+            <ul>
+              {% if videoclip.image %}
+                <img src="{{ videoclip.image }}" alt="{{ videoclip.description}} " style="max-width: 300px;">
+              {% endif %}
+              <p>{{ videoclip.description|default:"" }}</p>
+              {% if videoclip.videoclip %}
+                <a href="{{ videoclip.videoclip }}" target="_blank">Enlace al videoclip</a>
+              {% endif %}
+            </ul>
+          {% endfor %}
       {% endif %}
-      {% if product.product_paratext.paratext_videoclip.all %}
-        <div>
-          <strong>Videoclips y actuaciones directo</strong>
-        </div> 
-        {% for videoclip in product.product_paratext.paratext_videoclip.all %}
-          <ul>
-            {% if videoclip.image %}
-              <img src="{{ videoclip.image }}" alt="{{ videoclip.description}} " style="max-width: 300px;">
-            {% endif %}
-            <p>{{ videoclip.description|default:"" }}</p>
-            {% if videoclip.videoclip %}
-              <a href="{{ videoclip.videoclip }}" target="_blank">Enlace al videoclip</a>
-            {% endif %}
-          </ul>
-        {% endfor %}
+      </div>
     {% endif %}
-    </div>
   {% endif %}
 
   <!-- METATEXTOS TERMNINADO -->
