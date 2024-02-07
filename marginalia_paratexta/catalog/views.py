@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic, View
+
+from catalog.filters import ProductFilter
 from .models import BoardGame, Comic, Movie, Musica, Novel, Product, MedialTransfers, Theatre, Videogame
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -42,6 +44,15 @@ def index(request):
 class ProductListView( generic.ListView):
     model = Product
     context_object_name = 'product_list'
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.filterset = ProductFilter(self.request.GET, queryset=queryset)
+        return self.filterset.qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filter'] = self.filterset
+        return context
 
 class TransmedialityListView(generic.ListView):
     model = MedialTransfers
