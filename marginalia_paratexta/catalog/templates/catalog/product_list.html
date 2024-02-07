@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
+  <form method="get" action="{% url 'creations' %}">
+    {{ filter.form.as_p }}
+    
+    <button type="submit">Filter</button>
+    <a href="?">Resetear filtros</a>
+  </form>
   <h1>Creation List</h1>
   {% if product_list %}
     <ul>
@@ -13,4 +19,5 @@
   {% else %}
     <p>There are no products in the library.</p>
   {% endif %}
+  
 {% endblock %}
