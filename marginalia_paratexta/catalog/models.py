@@ -85,6 +85,8 @@ class Creation(PolymorphicModel):
     synopsis = models.TextField('Sinopsis', null=True, blank=True,)
     paises = models.ManyToManyField(Country, blank=True)
     palabras_clave = models.ManyToManyField(KeyWord, blank=True)
+    genero = models.ManyToManyField(Genre, blank=True)
+
     #Dudoso
     #product = models.OneToOneField("Product", on_delete=models.CASCADE, related_name="product_creation")
     def __str__(self):
@@ -133,7 +135,6 @@ class Movie(MediaCreation):
     earnings = models.IntegerField("Taquilla", null=True, blank=True)
     remake = models.TextField('Remake info', null=True, blank=True)
     remake_link =  models.OneToOneField('Product', on_delete=models.SET_NULL, blank=True, null=True, name='remake_link', related_name="remake_movie")
-    genero = models.ManyToManyField(Genre, blank=True)
     class Meta:
         verbose_name = "Película"
 
@@ -153,7 +154,7 @@ class TVSerie(MediaCreation):
     other_data = models.TextField('Otros datos', null=True, blank=True)
     remake = models.TextField('Remake info',  null=True, blank=True)
     remake_link =  models.OneToOneField('Product', on_delete=models.SET_NULL, null=True, blank=True, name='remake_link', related_name="remake_tvserie")
-    genero = models.ManyToManyField(Genre, blank=True)
+    
     class Meta:
         verbose_name = "Serie TV"
 
@@ -165,7 +166,7 @@ class Videogame(MediaCreation):
     design = models.TextField('Diseño',  null=True, blank=True)
     plataforms = models.TextField('Plataformas',  null=True, blank=True)
     official_website = models.CharField('Web oficial', max_length=10000, null=True, blank=True)
-    genero = models.ManyToManyField(Genre, blank=True)
+    
     class Meta:
         verbose_name = "Videojuego"
 
@@ -196,7 +197,7 @@ class Musica(Creation):
     mixing = models.CharField('Mezcla', max_length=10000, null=True, blank=True)
     remastering = models.CharField('Reedición', max_length=10000, null=True, blank=True)
     cover_design = models.CharField('Diseño de carátula', max_length=10000, null=True, blank=True)
-    genero = models.ManyToManyField(Genre, blank=True)
+    
     class Meta:
         verbose_name = "Música"
 
@@ -225,7 +226,7 @@ class Theatre(Creation):
     remake_link =  models.OneToOneField('Product', on_delete=models.SET_NULL, null=True, blank=True, name='remake_link', related_name="remake_theatre")
     repositions = models.TextField('Reposiciones',  null=True, blank=True)
     links = models.TextField('Links',  null=True, blank=True)
-    genero = models.ManyToManyField(Genre, blank=True)
+    
 
     class Meta:
         verbose_name = "Teatro"
@@ -253,7 +254,7 @@ class Staging(models.Model):
 
 class Editorial(models.Model):
     name = models.CharField('Nombre', max_length=10000)
-    city = models.CharField('Ciudad',null=True, blank=True, max_length=10000)
+    city = models.CharField('Ciudad',null=True, blank=True,  max_length=10000)
     def __str__(self):
         return self.name
     class Meta:
@@ -287,15 +288,14 @@ class LibraryCreation(Creation):
 class Comic(LibraryCreation):
     script = models.TextField('Guión', null=True, blank=True)
     design = models.TextField('Diseño',  null=True, blank=True)
-    genero = models.ManyToManyField(Genre, blank=True)
     colecciones = models.ManyToManyField(Collection, related_name='collection_comic', blank=True)
     class Meta:
         verbose_name = "Comic"
 class Novel(LibraryCreation):
     autorship = models.CharField('Autoría', max_length=10000, null=True, blank=True)
-    genero = models.ManyToManyField(Genre, blank=True)
     class Meta:
         verbose_name = "Novela"
+
 class BoardGame(LibraryCreation):
     number_players =  models.IntegerField("Número de jugadores",default=2, choices=((i,i) for i in range(1, 16)))
     age = models.IntegerField("Edad minima",default=1, choices=((i,i) for i in range(1, 101)))
@@ -303,7 +303,7 @@ class BoardGame(LibraryCreation):
     ilustrator = models.TextField('Ilustrador',  null=True, blank=True)
     developer = models.TextField('Desarrollador',  null=True, blank=True)
     design = models.TextField('Diseño',  null=True, blank=True)
-    genero = models.ManyToManyField(Genre, blank=True)
+    
     class Meta:
         verbose_name = "Juego de mesa"
 
