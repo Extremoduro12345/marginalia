@@ -2,6 +2,38 @@
 
 {% block content %}
 <h1>{{ product.title }}</h1>
+
+<!-- Nodos y fichas relacionadas-->
+{% if product.related_products.all or product.related_to.all %}
+  <h5>Fichas relacionadas</h5>
+  <ul>
+    {% for ficha in product.related_products.all %}
+      <li>
+        <a href="{% url 'creation-detail' pk=ficha.id %}">{{ficha.title}}</a>
+      </li>
+    {% endfor %}
+    {% for ficha in product.related_to.all %}
+    <li>
+      <a href="{% url 'creation-detail' pk=ficha.id %}">{{ficha.title}}</a>
+    </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+{% if product.related_knots.all %}
+  <h5>Nodos</h5>
+    {% for nodo in product.related_knots.all %}
+      <strong>{{ nodo.info }}</strong>
+      <ul>
+        {% for producto in nodo.productos.all %}
+          {% if product.id != producto.id %}
+            <li>
+              <a href="{% url 'creation-detail' pk=producto.id %}">{{producto.title}}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% endfor %}
+{% endif %}
 <!-- DETALLES DE LA CREACION CONJUNTOS TERMINADO-->
 <div>
   <h2>Detalles de la creación</h2>
@@ -13,9 +45,13 @@
   {% if  product.creation.authorship %}
     <p><strong>Autoría: </strong>{{ product.creation.authorship }}</p>
   {% endif %}
-  <p><strong>Año de publicación: </strong>{{ product.creation.publication_year }}</p>
+  {% if product.creation.end_year %}
+    <p><strong>Fechas: </strong>({{ product.creation.publication_year }} - {{ product.creation.end_year }})</p>
+  {% else %}
+    <p><strong>Año de publicación: </strong>{{ product.creation.publication_year }}</p>
+  {% endif %}
   {% if  product.creation.synopsis %}
-    <p><strong>Sinopsis: </strong>{{ product.creation.synopsis }}</p>
+    <p><strong>Sinopsis: </strong>{{ product.creation.synopsis|urlize|linebreaks }}</p>
   {% endif %}
   {% if product.creation.creation_award.all %}
     <h5>Premios:</h5>
@@ -231,18 +267,24 @@
       <ul>
         {% for stage in product.creation.theatre_staging.all %}
           <li>
-            {% if  product.creation.artistic_direction %}
-              <p><strong>Dirección atrística: </strong>{{ product.creation.artistic_direction }}</p>
+            {% if  stage.artistic_direction %}
+              <p><strong>Dirección artística: </strong>{{ stage.artistic_direction }}</p>
             {% endif %}
-            {% if  product.creation.producer %}
-              <p><strong>Producción: </strong>{{ product.creation.producer }}</p>
+            {% if  stage.producer %}
+              <p><strong>Producción: </strong>{{ stage.producer }}</p>
             {% endif %}    
-            {% if  product.creation.cast %}
-              <p><strong>Reparto: </strong>{{ product.creation.cast }}</p>
+            {% if  stage.cast %}
+              <p><strong>Reparto: </strong>{{ stage.cast }}</p>
             {% endif %}
-            {% if  product.creation.location %}
-              <p><strong>Lugar: </strong>{{ product.creation.location }}</p>
-            {% endif %}          
+            {% if  stage.location %}
+              <p><strong>Lugar: </strong>{{ stage.location }}</p>
+            {% endif %}     
+            {% if  stage.date %}
+              <p><strong>Fecha: </strong>{{ stage.date }}</p>
+            {% endif %}   
+            {% if  stage.link %}
+               <a href="{{ stage.videoclip }}" target="_blank">Enlace</a>
+            {% endif %}        
           </li>
         {% endfor %}
       </ul>
@@ -390,7 +432,7 @@
       <h4>Fuentes Clásicas</h4>
       <ul>
         {% for classic_source in product.product_hipotext.hipotext_classic_sources.all %}
-          <li><p>{{ classic_source.name|default:"" }} {{ classic_source.title|default:"" }} {{ classic_source.reference|default:""}}</p></li>
+          <li><p>{{ classic_source.name|default:"" }}, {{ classic_source.title|default:"" }} [{{ classic_source.reference|default:""}}], {% if classic_source.others %}Otros: {{ classic_source.others }}  {% endif %}</p></li>
         {% endfor %}
       </ul>
     </div>
@@ -423,19 +465,19 @@
     {% if product.product_paratext %}
       <div>
         <h2>Paratextos</h2>
-        {% if product.product_paratext.introduction %}
+        {% if product.product_paratext.introduction and product.product_paratext.introduction != '--' %}
           <strong>Introducción</strong>
           <p>{{ product.product_paratext.introduction }}</p>
         {% endif %}
-        {% if product.product_paratext.prologue %}
+        {% if product.product_paratext.prologue and product.product_paratext.introduction != '--' %}
           <strong>Prólogo</strong>
           <p>{{ product.product_paratext.prologue }}</p>
         {% endif %}
-        {% if product.product_paratext.epilogue %}
+        {% if product.product_paratext.epilogue and product.product_paratext.introduction != '--' %}
           <strong>Epílogo</strong>
           <p>{{ product.product_paratext.epilogue }}</p>
         {% endif %}
-        {% if product.product_paratext.notes %}
+        {% if product.product_paratext.notes and product.product_paratext.introduction != '--' %}
           <strong>Notas, citas, scholia varia, ...</strong>
           <p>{{ product.product_paratext.notes }}</p>
         {% endif %}
@@ -556,7 +598,7 @@
 
       {% if product.product_metatext.metatext_press_article.all %}
         <div>
-          <strong>Críticas</strong>
+          <strong>Artículos de prensa</strong>
         </div>
         {% for press_article in product.product_metatext.metatext_press_article.all %}
           <ul>
@@ -570,7 +612,7 @@
 
       {% if product.product_metatext.metatext_social_networks.all %}
         <div>
-          <strong>Críticas</strong>
+          <strong>Social Networks</strong>
         </div>
         {% for social_network in product.product_metatext.metatext_social_networks.all %}
           <ul>
@@ -642,5 +684,8 @@
     {% endif %}
   </div>
   {% endif %}
+
+  <!-- ADICIONAL-->
+  <p>Autor: {{ product.build_id }}, Última modificación:  {{ product.last_modified }}</p>
 
 {% endblock %}
