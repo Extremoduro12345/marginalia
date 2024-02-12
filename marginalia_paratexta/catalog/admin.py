@@ -320,8 +320,8 @@ class ProductAdmin(NestedModelAdmin):
     search_fields=('title',)
     inlines = [ HipotextInline, ParatextInline, MetatextInline, MedialTransferInline, BibliographyInline ]
     def save_model(self, request, obj, form, change):
-        if not change: 
-            obj.build_id = str(request.user.username) + "-" + str(request.user.id)
+        obj.last_modified = datetime.date.today()
+        obj.build_id = str(request.user.username) + "-" + str(request.user.id)
         obj.save()
 
 @admin.register(Editorial)
