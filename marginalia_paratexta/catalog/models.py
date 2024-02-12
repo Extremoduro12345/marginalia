@@ -10,7 +10,9 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from treenode.models import TreeNodeModel
+BLANK_CHOICE = [('', '---------')]  # Opción en blanco para el formulario
 
+year_choices = BLANK_CHOICE + [(i, i) for i in range(1930, 2024)]
 class Genre(models.Model):
 
     name = models.CharField('Nombre', max_length=200, null=True)
@@ -82,6 +84,7 @@ class Creation(PolymorphicModel):
     subtitles = models.TextField('Subtítulos, capítulos y entregas', null=True, blank=True,)
     authorship = models.TextField('Autoría', null=True, blank=True,)
     publication_year =  models.IntegerField("Año de publicación",default=2023, choices=((i,i) for i in range(1930, 2024)))
+    end_year = models.IntegerField("Año Finalización", default=None, choices=year_choices, null=True, blank=True)
     synopsis = models.TextField('Sinopsis', null=True, blank=True,)
     paises = models.ManyToManyField(Country, blank=True)
     palabras_clave = models.ManyToManyField(KeyWord, blank=True)
@@ -243,6 +246,8 @@ class Staging(models.Model):
     producer = models.TextField('Producción', null=True, blank=True)
     cast = models.TextField('Reparto', null=True, blank=True)    
     location = models.CharField('Lugar', max_length=10000, null=True, blank=True)
+    date = models.CharField('Fecha', max_length=10000, null=True, blank=True)
+    link = models.CharField('Enlace', max_length=10000, null=True, blank=True)
     theatre = models.ForeignKey(Theatre,verbose_name='Obra de teatro asociada', on_delete=models.CASCADE, related_name="theatre_staging")
     def __str__(self):
         if self.producer:
@@ -346,6 +351,7 @@ class ClassicSource(models.Model):
     name = models.CharField('Nombre', max_length=10000, null=True, blank=True)
     title = models.CharField('Título', max_length=10000, null=True, blank=True)
     reference = models.CharField('Referencia bibliográfica', max_length=10000,  null=True, blank=True)
+    others = models.CharField('Otros', max_length=10000,  null=True, blank=True)
     hipotext = models.ForeignKey(Hipotext, on_delete=models.CASCADE, related_name="hipotext_classic_sources") 
     class Meta:
         verbose_name_plural = "Fuentes clásicas"
@@ -357,6 +363,7 @@ class OtherSource(models.Model):
     name = models.CharField('Nombre', max_length=10000,null=True, blank=True)
     title = models.CharField('Título', max_length=10000, null=True, blank=True)
     reference = models.CharField('Referencia bibliográfica', max_length=10000,  null=True, blank=True)
+    others = models.CharField('Otros', max_length=10000,  null=True, blank=True)
     hipotext = models.ForeignKey(Hipotext, on_delete=models.CASCADE, related_name="hipotext_other_sources") 
     class Meta:
         verbose_name_plural = "Otras fuentes"
@@ -368,6 +375,7 @@ class DocumentarySource(models.Model):
     name = models.CharField('Nombre', max_length=10000,null=True, blank=True)
     title = models.CharField('Título', max_length=10000,null=True, blank=True)
     reference = models.CharField('Referencia bibliográfica', max_length=10000,  null=True, blank=True)
+    others = models.CharField('Otros', max_length=10000,  null=True, blank=True)
     hipotext = models.ForeignKey(Hipotext, on_delete=models.CASCADE, related_name="hipotext_documentary_sources") 
     class Meta:
         verbose_name_plural = "Fuentes documentales"
@@ -534,6 +542,7 @@ class Product(models.Model):
     build_id = models.CharField('Autor/a de la ficha', max_length= 100, editable=False) #Esto tiene que hacerse con el id del que lo ha creado
     last_modified = models.DateField('Última modificación', editable=False, default=datetime.date.today)
     creation = models.OneToOneField(Creation, on_delete=models.CASCADE)
+    related_products = models.ManyToManyField('self', blank=True, verbose_name='Fichas relacionadas', related_name='related_to')
     def __str__(self):
         return self.title
     class Meta:
