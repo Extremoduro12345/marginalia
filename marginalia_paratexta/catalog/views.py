@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic, View
 
 from catalog.filters import ProductFilter
-from .models import BoardGame, Comic, Movie, Musica, Novel, Product, MedialTransfers, Theatre, Videogame
+from .models import BoardGame, Comic, Knot, Movie, Musica, Novel, Product, Theatre, Videogame
 from django.urls import reverse_lazy
 from django.contrib import messages
 from .forms import SignUpForm
@@ -54,9 +54,9 @@ class ProductListView( generic.ListView):
         context['filter'] = self.filterset
         return context
 
-class TransmedialityListView(generic.ListView):
-    model = MedialTransfers
-    context_object_name = 'transmediality_list'
+class KnotListView(generic.ListView):
+    model = Knot
+    context_object_name = 'knot_list'
 
 class ProductDetailView(generic.DetailView):
     model = Product
@@ -114,3 +114,12 @@ def product_detail_view(request, pk):
             'user_belongs_to_group': user_belongs_to_group
         }
     return render(request, 'catalog/product_detail.html', context=context)
+
+def knot_detail_view(request, pk):
+    knot = get_object_or_404(Knot, pk=pk)
+
+    context = {
+        'knot': knot,
+    }
+
+    return render(request, 'catalog/knot_detail.html', context=context)
