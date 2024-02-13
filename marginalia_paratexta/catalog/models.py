@@ -51,6 +51,7 @@ class Fandom(models.Model):
 
 class Country(models.Model):
     name = models.CharField('Nombre del país', max_length=200)
+    iso_code = models.CharField('Código ISO del país', max_length=3, null=True, blank=True)
     def __str__(self):
         return self.name
     class Meta:
