@@ -171,17 +171,17 @@ def world_map_view(request):
     country_creations_count = {}
     for creation in creations:
         for country in creation.paises.all():
-            country_name = country.name
-            if country_name not in country_creations_count:
-                country_creations_count[country_name] = 1
+            country_iso = country.iso_code 
+            if country_iso not in country_creations_count:
+                country_creations_count[country_iso] = 1
             else:
-                country_creations_count[country_name] += 1
+                country_creations_count[country_iso] += 1
 
     # Crear los datos del mapa
     data = [go.Choropleth(
         locations=list(country_creations_count.keys()),
         z=list(country_creations_count.values()),
-        locationmode='country names',
+        locationmode='ISO-3',
         colorscale='Viridis',
         marker_line_color='black',
         marker_line_width=0.5,
