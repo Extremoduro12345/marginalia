@@ -51,7 +51,7 @@
     <p><strong>Año de publicación: </strong>{{ product.creation.publication_year }}</p>
   {% endif %}
   {% if  product.creation.synopsis %}
-    <p><strong>Sinopsis: </strong>{{ product.creation.synopsis|urlize|linebreaks }}</p>
+    <p><strong>Sinopsis: </strong>{{ product.creation.synopsis|urlizetrunc:8|linebreaks }}</p>
   {% endif %}
   {% if product.creation.creation_award.all %}
     <h5>Premios:</h5>
@@ -239,10 +239,10 @@
       <p><strong>Texto dramático: </strong>{{ product.creation.dramatic_text }}</p>
     {% endif %}
     {% if  product.creation.repositions %}
-      <p><strong>Reposiciones: </strong>{{ product.creation.repositions|urlize|linebreaks }}</p>
+      <p><strong>Reposiciones: </strong>{{ product.creation.repositions|urlizetrunc:8|linebreaks }}</p>
     {% endif %}
     {% if  product.creation.links %}
-      <p><strong>Links: </strong>{{ product.creation.links|urlize|linebreaks }}</p>
+      <p><strong>Links: </strong>{{ product.creation.links|urlizetrunc:8|linebreaks }}</p>
     {% endif %}
     {% if  product.creation.remake %}
       <p><strong>Info remake: </strong>{{ product.creation.remake }}</p>
@@ -676,11 +676,11 @@
     <h2>Bibliografía:</h2>
     {% if  product.product_bibliography.studies_tradition_classical_reception %}
       <strong>Estudios de Tradición y Recepción Clásica</strong>
-      <p>{{product.product_bibliography.studies_tradition_classical_reception|urlize|linebreaks }}</p>
+      <p>{{product.product_bibliography.studies_tradition_classical_reception|urlizetrunc:8|linebreaks }}</p>
     {% endif %}
     {% if  product.product_bibliography.other_studies %}
     <strong>Otros estudios</strong>  
-     <p>{{ product.product_bibliography.other_studies|urlize|linebreaks }}</p>
+     <p>{{ product.product_bibliography.other_studies|urlizetrunc:8|linebreaks }}</p>
     {% endif %}
   </div>
   {% endif %}
