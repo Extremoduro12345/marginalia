@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic, View
-
+import matplotlib.pyplot as plt
+from io import BytesIO
+import base64
 from catalog.filters import ProductFilter
-from .models import BoardGame, Comic, Knot, Movie, Musica, Novel, Product, Theatre, Videogame
-from django.urls import reverse_lazy
+from .models import BoardGame, Comic, Creation, Genre, Knot, Movie, Musica, Novel, Product, Theatre, Videogame
 from django.contrib import messages
 from .forms import SignUpForm
 
@@ -123,3 +124,41 @@ def knot_detail_view(request, pk):
     }
 
     return render(request, 'catalog/knot_detail.html', context=context)
+
+def grafico_barras_view(request):
+    genero = request.GET.get('genero')
+    
+    # Filtrar creaciones por género si se proporciona
+    if genero:
+        creaciones = Creation.objects.filter(genero__name=genero)
+        titulo = f'Número de Creaciones con Género {genero} por Década'
+    else:
+        creaciones = Creation.objects.all()
+        titulo = 'Número de Creaciones por Década'
+    # Lógica para generar el gráfico de barras
+    # Por ejemplo, contar el número de creaciones por década
+    decadas = range(1930, 2040, 10)
+    num_creaciones_por_decada = [creaciones.filter(publication_year__range=(decada, decada + 9)).count() for decada in decadas]
+
+    # Crear el gráfico de barras
+    plt.figure(figsize=(10, 6))  # Tamaño del gráfico
+    plt.bar(decadas, num_creaciones_por_decada, width=5, align='center')  # Ancho de las barras y alineación
+    plt.xticks(decadas) 
+    plt.xlabel('Década')
+    plt.ylabel('Número de Creaciones')
+    plt.title(titulo)
+
+    plt.yticks(range(max(num_creaciones_por_decada) + 1))
+    plt.gca().yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{int(x)}'))
+
+    # Convertir el gráfico a una imagen base64 para mostrar en el template
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    imagen_base64 = base64.b64encode(buffer.read()).decode('utf-8')
+
+    # Lista de géneros para mostrar en el formulario de filtrado
+    lista_de_generos = Creation.objects.values_list('genero__name', flat=True).distinct().exclude(genero__name=None)
+    print(num_creaciones_por_decada)
+    # Retorna el contexto con los datos del gráfico y la lista de géneros
+    return render(request, 'catalog/graph.html', {'imagen_base64': imagen_base64, 'lista_de_generos': lista_de_generos})
