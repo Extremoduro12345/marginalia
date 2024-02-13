@@ -4,9 +4,10 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
 from catalog.filters import ProductFilter
-from .models import BoardGame, Comic, Creation, Genre, Knot, Movie, Musica, Novel, Product, Theatre, Videogame
+from .models import BoardGame, Comic, Country, Creation, Genre, Knot, Movie, Musica, Novel, Product, Theatre, Videogame
 from django.contrib import messages
 from .forms import SignUpForm
+import plotly.graph_objs as go
 
 class SignUpView(View):
     def get(self, request):
@@ -159,5 +160,49 @@ def grafico_barras_view(request):
 
     # Lista de géneros para mostrar en el formulario de filtrado
     lista_de_generos = Creation.objects.values_list('genero__name', flat=True).distinct().exclude(genero__name=None)
+    print(num_creaciones_por_decada)
     # Retorna el contexto con los datos del gráfico y la lista de géneros
     return render(request, 'catalog/graph.html', {'imagen_base64': imagen_base64, 'lista_de_generos': lista_de_generos})
+
+def world_map_view(request):
+    creations = Creation.objects.all()
+
+    # Contar el número de creaciones por país
+    country_creations_count = {}
+    for creation in creations:
+        for country in creation.paises.all():
+            country_name = country.name
+            if country_name not in country_creations_count:
+                country_creations_count[country_name] = 1
+            else:
+                country_creations_count[country_name] += 1
+
+    # Crear los datos del mapa
+    data = [go.Choropleth(
+        locations=list(country_creations_count.keys()),
+        z=list(country_creations_count.values()),
+        locationmode='country names',
+        colorscale='Viridis',
+        marker_line_color='black',
+        marker_line_width=0.5,
+    )]
+
+    # Crear el diseño del mapa
+    layout = go.Layout(
+        title='Número de Creaciones por País',
+        geo=dict(
+            showframe=False,
+            showcoastlines=True,
+            projection_type='equirectangular'
+        ),
+        width=1000,  # Ancho del mapa en píxeles
+        height=600,  # Alto del mapa en píxeles
+    )
+
+    # Crear la figura del mapa
+    fig = go.Figure(data=data, layout=layout)
+
+    # Convertir la figura a JSON para enviarla a la plantilla
+    graph_json = fig.to_json()
+
+    return render(request, 'catalog/map.html', {'graph_json': graph_json})
