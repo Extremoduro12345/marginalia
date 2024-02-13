@@ -159,6 +159,5 @@ def grafico_barras_view(request):
 
     # Lista de géneros para mostrar en el formulario de filtrado
     lista_de_generos = Creation.objects.values_list('genero__name', flat=True).distinct().exclude(genero__name=None)
-    print(num_creaciones_por_decada)
     # Retorna el contexto con los datos del gráfico y la lista de géneros
     return render(request, 'catalog/graph.html', {'imagen_base64': imagen_base64, 'lista_de_generos': lista_de_generos})
