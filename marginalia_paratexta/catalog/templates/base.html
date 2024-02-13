@@ -14,6 +14,7 @@
     <!-- Add additional CSS in static file -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   </head>
   <body>
     <div class="container-fluid">
@@ -39,7 +40,8 @@
               <li><a href="{% url 'index' %}">Home</a></li>
               <li><a href="{% url 'creations' %}">Creaciones</a></li>
               <li><a href="{% url 'knots' %}">Nodos</a></li>
-              <li><a href="{% url 'graph' %}">Gráfico Género</a></li>
+              <li><a href="{% url 'graph' %}">Gráfico Generos</a></li>
+              <li><a href="{% url 'map' %}">Gráfico mapa</a></li>
             </ul>
           {% endblock %}
         </div>
