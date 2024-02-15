@@ -8,7 +8,7 @@ from .models import BoardGame, Comic, Country, Creation, Genre, Knot, Movie, Mus
 from django.contrib import messages
 from .forms import SignUpForm
 import plotly.graph_objs as go
-
+from django.db.models import Q
 class SignUpView(View):
     def get(self, request):
         form = SignUpForm()
@@ -128,24 +128,46 @@ def knot_detail_view(request, pk):
 
 def grafico_barras_view(request):
     genero = request.GET.get('genero')
-    
-    # Filtrar creaciones por género si se proporciona
+    anio_inicio_str = request.GET.get('anio_inicio', '1930')
+    anio_fin_str = request.GET.get('anio_fin', '2030')
+    year_range_str = request.GET.get('year_range', '10')
+    keyWords = request.GET.getlist('keywords') if 'keywords' in request.GET else []
+    print(keyWords)
+    anos = range(1930, 2031, 10)
+    # Convertir los valores a enteros
+    anio_inicio = int(anio_inicio_str)
+    anio_fin = int(anio_fin_str)
+    year_range = int(year_range_str)
+
     if genero:
         creaciones = Creation.objects.filter(genero__name=genero)
-        titulo = f'Número de Creaciones con Género {genero} por Década'
+        titulo = f'Número de Creaciones con Género {genero} cada {year_range} años'
+        if len(keyWords) > 0:
+            for keyword in keyWords:
+                creaciones = creaciones.filter(palabras_clave__name=keyword)
+            titulo = f'Número de Creaciones con Género {genero} cada {year_range} años y con keywords: {", ".join(keyWords)}'
+    elif len(keyWords) > 0:
+            creaciones = Creation.objects.all()
+            for keyword in keyWords:
+                creaciones = creaciones.filter(palabras_clave__name=keyword)
+            titulo = f'Número de Creaciones cada {year_range} años con keywords: {", ".join(keyWords)}'
     else:
         creaciones = Creation.objects.all()
-        titulo = 'Número de Creaciones por Década'
+        titulo = f'Número de Creaciones cada {year_range} años'
     # Lógica para generar el gráfico de barras
     # Por ejemplo, contar el número de creaciones por década
-    decadas = range(1930, 2040, 10)
-    num_creaciones_por_decada = [creaciones.filter(publication_year__range=(decada, decada + 9)).count() for decada in decadas]
+    decadas = range(anio_inicio, anio_fin, year_range)
 
+    if (year_range == 5):
+        num_creaciones_por_decada = [creaciones.filter(publication_year__range=(decada, decada + 4)).count() for decada in decadas]
+    else:
+        num_creaciones_por_decada = [creaciones.filter(publication_year__range=(decada, decada + 9)).count() for decada in decadas]
+    
     # Crear el gráfico de barras
     plt.figure(figsize=(10, 6))  # Tamaño del gráfico
     plt.bar(decadas, num_creaciones_por_decada, width=5, align='center')  # Ancho de las barras y alineación
     plt.xticks(decadas) 
-    plt.xlabel('Década')
+    plt.xlabel('Años')
     plt.ylabel('Número de Creaciones')
     plt.title(titulo)
 
@@ -157,12 +179,12 @@ def grafico_barras_view(request):
     plt.savefig(buffer, format='png')
     buffer.seek(0)
     imagen_base64 = base64.b64encode(buffer.read()).decode('utf-8')
-
+    rango_anos = [10, 5]
     # Lista de géneros para mostrar en el formulario de filtrado
     lista_de_generos = Creation.objects.values_list('genero__name', flat=True).distinct().exclude(genero__name=None)
-    print(num_creaciones_por_decada)
+    lista_de_palabras_clave = Creation.objects.values_list('palabras_clave__name', flat=True).distinct().exclude(palabras_clave__name=None)
     # Retorna el contexto con los datos del gráfico y la lista de géneros
-    return render(request, 'catalog/graph.html', {'imagen_base64': imagen_base64, 'lista_de_generos': lista_de_generos})
+    return render(request, 'catalog/graph.html', {'imagen_base64': imagen_base64, 'lista_de_generos': lista_de_generos, 'anos': anos, 'rango_anos': rango_anos, 'palabras_clave': lista_de_palabras_clave})
 
 def world_map_view(request):
     creations = Creation.objects.all()
