@@ -127,7 +127,7 @@ def knot_detail_view(request, pk):
     return render(request, 'catalog/knot_detail.html', context=context)
 
 def grafico_barras_view(request):
-    genero = request.GET.get('genero')
+    generos = request.GET.getlist('genero') if 'genero' in request.GET else []
     anio_inicio_str = request.GET.get('anio_inicio', '1930')
     anio_fin_str = request.GET.get('anio_fin', '2030')
     year_range_str = request.GET.get('year_range', '10')
@@ -139,13 +139,15 @@ def grafico_barras_view(request):
     anio_fin = int(anio_fin_str)
     year_range = int(year_range_str)
 
-    if genero:
-        creaciones = Creation.objects.filter(genero__name=genero)
+    if len(generos) > 0:
+        creaciones = Creation.objects.all()
+        for genero in generos:
+                creaciones = creaciones.filter(genero__name=genero)
         titulo = f'Número de Creaciones con Género {genero} cada {year_range} años'
         if len(keyWords) > 0:
             for keyword in keyWords:
                 creaciones = creaciones.filter(palabras_clave__name=keyword)
-            titulo = f'Número de Creaciones con Género {genero} cada {year_range} años y con palabras clave: {", ".join(keyWords)}'
+            titulo = f'Número de Creaciones con Género {", ".join(generos)} cada {year_range} años y con palabras clave: {", ".join(keyWords)}'
     elif len(keyWords) > 0:
             creaciones = Creation.objects.all()
             for keyword in keyWords:
