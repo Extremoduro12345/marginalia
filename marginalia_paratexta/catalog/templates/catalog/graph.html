@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Gráfico de Barras: Número de Creaciones por Década</h1>
+    <h1>Gráfico de Barras: Número de Creaciones por Años</h1>
 
     <!-- Formulario de filtrado por género -->
     <form method="GET" action="{% url 'graph' %}">
-        <label for="genero">Filtrar por Género:</label>
+        <label for="genero">Géneros:</label>
         <select name="genero" id="genero">
             <option value="">Todos los Géneros</option>
             <!-- Opciones de género obtenidas de tu base de datos o fijas -->
@@ -13,6 +13,32 @@
                 <option value="{{ genero }}">{{ genero }}</option>
             {% endfor %}
         </select>
+        <label for="keywords">Palabras Clave:</label>
+        <select name="keywords" id="keywords" multiple>
+            <!-- Opciones de keywords obtenidas de tu base de datos o fijas -->
+            {% for keyword in palabras_clave %}
+                <option value="{{ keyword }}">{{ keyword }}</option>
+            {% endfor %}
+        </select>
+    <label for="anio_inicio">Año de inicio:</label>
+    <select name="anio_inicio" id="anio_inicio">
+        {% for anio in anos %}
+            <option value="{{ anio }}">{{ anio }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="anio_fin">Año de fin:</label>
+    <select name="anio_fin" id="anio_fin">
+        {% for anio in anos %}
+            <option value="{{ anio }}" {% if anio == 2030 %} selected {% endif %}>{{ anio }}</option>
+        {% endfor %}
+    </select>
+    <label for="year_range">Creaciones cada:</label>
+    <select name="year_range" id="year_range">
+        {% for anio in rango_anos %}
+            <option value="{{ anio }}">{{ anio }}</option>
+        {% endfor %}
+    </select>
         <button type="submit">Filtrar</button>
     </form>
 
