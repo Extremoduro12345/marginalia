@@ -8,6 +8,8 @@ from .models import BoardGame, Comic, Country, Creation, Genre, Knot, Movie, Mus
 from django.contrib import messages
 from .forms import SignUpForm
 import plotly.graph_objs as go
+from functools import reduce
+from operator import or_
 from django.db.models import Q
 class SignUpView(View):
     def get(self, request):
@@ -132,7 +134,6 @@ def grafico_barras_view(request):
     anio_fin_str = request.GET.get('anio_fin', '2030')
     year_range_str = request.GET.get('year_range', '10')
     keyWords = request.GET.getlist('keywords') if 'keywords' in request.GET else []
-    print(keyWords)
     anos = range(1930, 2031, 10)
     # Convertir los valores a enteros
     anio_inicio = int(anio_inicio_str)
@@ -141,18 +142,27 @@ def grafico_barras_view(request):
 
     if len(generos) > 0:
         creaciones = Creation.objects.all()
-        for genero in generos:
-                creaciones = creaciones.filter(genero__name=genero)
+        consultas_q = [Q(genero__name=genero) for genero in generos]
+        consulta_final = reduce(or_, consultas_q)
+        creaciones = creaciones.filter(consulta_final).distinct()
         titulo = f'Número de Creaciones con Género {", ".join(generos)} cada {year_range} años'
+        print('Creaciones generos', creaciones)
         if len(keyWords) > 0:
-            for keyword in keyWords:
-                creaciones = creaciones.filter(palabras_clave__name=keyword)
+            creaciones2 = Creation.objects.all()
+            consultas_q = [Q(palabras_clave__name=keyWord) for keyWord in keyWords]
+            consulta_final = reduce(or_, consultas_q)
+            creaciones2 = creaciones2.filter(consulta_final).distinct()
             titulo = f'Número de Creaciones con Género {", ".join(generos)} cada {year_range} años y con palabras clave: {", ".join(keyWords)}'
+            creaciones = creaciones | creaciones2
+            creaciones = creaciones.distinct()
+            print('Creaciones generos y keywords',  creaciones)
     elif len(keyWords) > 0:
             creaciones = Creation.objects.all()
-            for keyword in keyWords:
-                creaciones = creaciones.filter(palabras_clave__name=keyword)
+            consultas_q = [Q(palabras_clave__name=keyWord) for keyWord in keyWords]
+            consulta_final = reduce(or_, consultas_q)
+            creaciones = creaciones.filter(consulta_final).distinct()
             titulo = f'Número de Creaciones cada {year_range} años con palabras clave: {", ".join(keyWords)}'
+            print('Creaciones generos y keywords', creaciones)
     else:
         creaciones = Creation.objects.all()
         titulo = f'Número de Creaciones cada {year_range} años'
@@ -171,7 +181,7 @@ def grafico_barras_view(request):
     plt.xticks(decadas) 
     plt.xlabel('Años')
     plt.ylabel('Número de Creaciones')
-    plt.title(titulo)
+    plt.title(titulo, wrap=True)
 
     plt.yticks(range(max(num_creaciones_por_decada) + 1))
     plt.gca().yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{int(x)}'))
