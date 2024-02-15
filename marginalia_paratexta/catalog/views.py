@@ -143,7 +143,7 @@ def grafico_barras_view(request):
         creaciones = Creation.objects.all()
         for genero in generos:
                 creaciones = creaciones.filter(genero__name=genero)
-        titulo = f'Número de Creaciones con Género {genero} cada {year_range} años'
+        titulo = f'Número de Creaciones con Género {", ".join(generos)} cada {year_range} años'
         if len(keyWords) > 0:
             for keyword in keyWords:
                 creaciones = creaciones.filter(palabras_clave__name=keyword)
