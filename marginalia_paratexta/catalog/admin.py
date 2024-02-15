@@ -198,7 +198,6 @@ class GenreAdmin(admin.ModelAdmin):
 class MovieAdmin(HiddenModelAdmin, DisableAddButtonModelAdmin):
     def get_form(self, request, obj=None, **kwargs):    # Just added this override
         form = super(MovieAdmin, self).get_form(request, obj, **kwargs)
-        form.base_fields['genero'].widget.can_add_related = False
         return form
     list_display = ('original_title', 'authorship')
     inlines = [AwardInline, OtherLanguageTitleInline, OtherCountriesDebutInline]
@@ -207,7 +206,6 @@ class MovieAdmin(HiddenModelAdmin, DisableAddButtonModelAdmin):
 class MusicAdmin(HiddenModelAdmin, DisableAddButtonModelAdmin):
     def get_form(self, request, obj=None, **kwargs):    # Just added this override
         form = super(MusicAdmin, self).get_form(request, obj, **kwargs)
-        form.base_fields['genero'].widget.can_add_related = False
         return form
     inlines = [AwardInline, OtherLanguageTitleInline]
 
@@ -215,7 +213,6 @@ class MusicAdmin(HiddenModelAdmin, DisableAddButtonModelAdmin):
 class TVSerieAdmin(HiddenModelAdmin, DisableAddButtonModelAdmin):
     def get_form(self, request, obj=None, **kwargs):    # Just added this override
         form = super(TVSerieAdmin, self).get_form(request, obj, **kwargs)
-        form.base_fields['genero'].widget.can_add_related = False
         return form
     inlines = [AwardInline, OtherLanguageTitleInline, OtherCountriesDebutInline]
 
@@ -223,7 +220,6 @@ class TVSerieAdmin(HiddenModelAdmin, DisableAddButtonModelAdmin):
 class VideogameAdmin(HiddenModelAdmin, DisableAddButtonModelAdmin):
     def get_form(self, request, obj=None, **kwargs):    # Just added this override
         form = super(VideogameAdmin, self).get_form(request, obj, **kwargs)
-        form.base_fields['genero'].widget.can_add_related = False
         return form
     inlines = [AwardInline, OtherLanguageTitleInline, OtherCountriesDebutInline]
 
@@ -231,7 +227,6 @@ class VideogameAdmin(HiddenModelAdmin, DisableAddButtonModelAdmin):
 class TheatreAdmin(HiddenModelAdmin, DisableAddButtonModelAdmin):
     def get_form(self, request, obj=None, **kwargs):    # Just added this override
         form = super(TheatreAdmin, self).get_form(request, obj, **kwargs)
-        form.base_fields['genero'].widget.can_add_related = False
         return form
     inlines = [AwardInline, OtherLanguageTitleInline, StagingInline, ImageInline]
 
@@ -240,7 +235,6 @@ class TheatreAdmin(HiddenModelAdmin, DisableAddButtonModelAdmin):
 class NovelAdmin(HiddenModelAdmin, DisableAddButtonModelAdmin):
     def get_form(self, request, obj=None, **kwargs):    # Just added this override
         form = super(NovelAdmin, self).get_form(request, obj, **kwargs)
-        form.base_fields['genero'].widget.can_add_related = False
         return form
     inlines = [AwardInline, OtherLanguageTitleInline, OtherLanguageEditionInline, ReissueInline]
 
@@ -248,7 +242,6 @@ class NovelAdmin(HiddenModelAdmin, DisableAddButtonModelAdmin):
 class ComicAdmin(HiddenModelAdmin, DisableAddButtonModelAdmin):
     def get_form(self, request, obj=None, **kwargs):    # Just added this override
         form = super(ComicAdmin, self).get_form(request, obj, **kwargs)
-        form.base_fields['genero'].widget.can_add_related = False
         return form
     inlines = [AwardInline, OtherLanguageTitleInline, OtherLanguageEditionInline, ReissueInline]
 
@@ -256,7 +249,6 @@ class ComicAdmin(HiddenModelAdmin, DisableAddButtonModelAdmin):
 class BoardGameAdmin(HiddenModelAdmin, DisableAddButtonModelAdmin):
     def get_form(self, request, obj=None, **kwargs):    # Just added this override
         form = super(BoardGameAdmin, self).get_form(request, obj, **kwargs)
-        form.base_fields['genero'].widget.can_add_related = False
         return form
     inlines = [AwardInline, OtherLanguageTitleInline, OtherLanguageEditionInline, ReissueInline]
 
