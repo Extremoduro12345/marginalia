@@ -145,12 +145,12 @@ def grafico_barras_view(request):
         if len(keyWords) > 0:
             for keyword in keyWords:
                 creaciones = creaciones.filter(palabras_clave__name=keyword)
-            titulo = f'Número de Creaciones con Género {genero} cada {year_range} años y con keywords: {", ".join(keyWords)}'
+            titulo = f'Número de Creaciones con Género {genero} cada {year_range} años y con palabras clave: {", ".join(keyWords)}'
     elif len(keyWords) > 0:
             creaciones = Creation.objects.all()
             for keyword in keyWords:
                 creaciones = creaciones.filter(palabras_clave__name=keyword)
-            titulo = f'Número de Creaciones cada {year_range} años con keywords: {", ".join(keyWords)}'
+            titulo = f'Número de Creaciones cada {year_range} años con palabras clave: {", ".join(keyWords)}'
     else:
         creaciones = Creation.objects.all()
         titulo = f'Número de Creaciones cada {year_range} años'
