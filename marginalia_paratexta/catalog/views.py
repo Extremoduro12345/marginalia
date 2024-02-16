@@ -48,13 +48,34 @@ def index(request):
 class ProductListView( generic.ListView):
     model = Product
     context_object_name = 'product_list'
+    template_name = 'catalog/product_list.html'
     def get_queryset(self):
         queryset = super().get_queryset()
         self.filterset = ProductFilter(self.request.GET, queryset=queryset)
-        return self.filterset.qs
+        any_condition = super().get_queryset().none()
+        devolverVacio = True
+        if 'genero' in self.request.GET:
+            generos = self.request.GET.getlist('genero')
+            any_condition = queryset.filter(creation__genero__id__in=generos).distinct()
+            devolverVacio = False
+        if 'palabras_clave' in self.request.GET:
+            keywords = self.request.GET.getlist('palabras_clave')
+            any_condition = any_condition | queryset.filter(creation__palabras_clave__id__in=keywords).distinct()
+            devolverVacio = False
+        all_conditions = self.filterset.qs
+        if devolverVacio:
+            any_condition=[]
+        else:
+            any_condition = any_condition.exclude(id__in=all_conditions.values_list('id', flat=True))
+        print(any_condition)
+        
+        return all_conditions, any_condition
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        all_conditions, any_condition = self.get_queryset()
+        context['all_conditions'] = all_conditions
+        context['any_condition'] = any_condition
         context['filter'] = self.filterset
         return context
 
@@ -146,7 +167,6 @@ def grafico_barras_view(request):
         consulta_final = reduce(or_, consultas_q)
         creaciones = creaciones.filter(consulta_final).distinct()
         titulo = f'Número de Creaciones con Género {", ".join(generos)} cada {year_range} años'
-        print('Creaciones generos', creaciones)
         if len(keyWords) > 0:
             creaciones2 = Creation.objects.all()
             consultas_q = [Q(palabras_clave__name=keyWord) for keyWord in keyWords]
@@ -155,14 +175,12 @@ def grafico_barras_view(request):
             titulo = f'Número de Creaciones con Género {", ".join(generos)} cada {year_range} años y con palabras clave: {", ".join(keyWords)}'
             creaciones = creaciones | creaciones2
             creaciones = creaciones.distinct()
-            print('Creaciones generos y keywords',  creaciones)
     elif len(keyWords) > 0:
             creaciones = Creation.objects.all()
             consultas_q = [Q(palabras_clave__name=keyWord) for keyWord in keyWords]
             consulta_final = reduce(or_, consultas_q)
             creaciones = creaciones.filter(consulta_final).distinct()
             titulo = f'Número de Creaciones cada {year_range} años con palabras clave: {", ".join(keyWords)}'
-            print('Creaciones generos y keywords', creaciones)
     else:
         creaciones = Creation.objects.all()
         titulo = f'Número de Creaciones cada {year_range} años'
